@@ -1,0 +1,223 @@
+================================================================================
+  SKILL GAP ANALYZER - YOUR ACTION ITEMS
+================================================================================
+
+🎯 WHAT YOU NEED TO DO:
+
+1️⃣  DOWNLOAD DATASET FROM KAGGLE
+    ▶ Go to: https://www.kaggle.com
+    ▶ Search for job roles/skills dataset
+    ▶ Download CSV file
+    ▶ Look for columns: Title, Skills, ExperienceLevel, etc.
+
+2️⃣  PLACE DATASET IN THIS FOLDER
+    
+    Path: backend/data/raw/jobs_dataset.csv
+    
+    Example:
+    📁 Skill_Gap_Analyser/
+       └─ 📁 backend/
+          └─ 📁 data/
+             └─ 📁 raw/
+                └─ 📄 jobs_dataset.csv  ← PUT YOUR FILE HERE
+
+3️⃣  GET MONGODB CONNECTION (Choose ONE)
+
+    OPTION A: Use Local MongoDB (Default)
+    └─ No action needed
+    └─ Already configured to: mongodb://localhost:27017
+    
+    OPTION B: Use Campus/Cloud MongoDB
+    └─ Ask your campus admin for MongoDB URL
+    └─ URL looks like: mongodb+srv://user:password@server/database
+    └─ Open: backend/.env
+    └─ Change: MONGODB_URL=<your_url>
+
+4️⃣  INITIALIZE DATASET
+    
+    Run this command:
+    
+    cd backend
+    python scripts/init_dataset.py --dataset data/raw/jobs_dataset.csv
+    
+    This will:
+    ✓ Load your CSV
+    ✓ Normalize skills (1000+)
+    ✓ Extract roles
+    ✓ Store in MongoDB
+    ✓ Create indexes
+
+5️⃣  START THE SYSTEM
+    
+    Start Backend:
+    cd backend
+    python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+    
+    Start Frontend (in new terminal):
+    cd frontend
+    python server.py
+
+6️⃣  OPEN IN BROWSER
+    
+    http://localhost:3000/app.html
+
+================================================================================
+
+📊 YOUR DATASET SHOULD LOOK LIKE THIS:
+
+    JobID | Title              | ExperienceLevel | Skills
+    ------|-------------------|-----------------|--------------------------------------
+    1     | Python Developer   | Junior          | Python, Django, PostgreSQL, Git
+    2     | Data Scientist     | Senior          | Python, TensorFlow, SQL, Pandas
+    3     | DevOps Engineer    | Mid             | Docker, Kubernetes, AWS, Terraform
+    4     | Full Stack Dev     | Junior          | JavaScript, React, Node.js, MongoDB
+
+📁 CSV COLUMNS NEEDED:
+    ✓ Title (required)
+    ✓ Skills (required - comma separated)
+    ✓ ExperienceLevel (optional - Fresher/Junior/Senior/Lead)
+    ✓ Responsibilities (optional - for extra skill extraction)
+    ✓ Keywords (optional)
+
+================================================================================
+
+🔧 MONGODB SETUP OPTIONS:
+
+OPTION 1: LOCAL (Easiest)
+    - Already running on localhost:27017
+    - No configuration needed
+    - Good for development/testing
+
+OPTION 2: CAMPUS/CLOUD
+    - Get URL from campus admin
+    - Example: mongodb+srv://username:password@cluster.mongodb.net/dbname
+    - Edit backend/.env and set MONGODB_URL=<your_url>
+
+OPTION 3: FREE ATLAS (MongoDB Cloud)
+    1. Go to: https://www.mongodb.com/cloud/atlas
+    2. Create free account
+    3. Create cluster
+    4. Get connection string
+    5. Add URL to backend/.env
+
+================================================================================
+
+✅ FEATURES INCLUDED:
+
+📝 User System
+  • Signup with name, email, password
+  • Login with JWT tokens
+  • Password hashing
+  • Profile page
+
+🔍 Skill Management
+  • Search 1000+ normalized skills
+  • Add/remove skills
+  • Manual skill entry
+  • Grouped display (Programming, Web, Database, etc.)
+
+📄 Resume Upload
+  • PDF/DOCX/TXT support
+  • Auto-extract skills
+  • Detect experience level
+  • Manual validation
+
+🎯 Role Matching (ML Powered)
+  • 5 ML algorithms for accuracy
+  • Top 10 role recommendations
+  • Match percentage display
+  • Role override feature
+
+🧠 Skill Gap Analysis
+  • Matching skills (green)
+  • Missing skills (red)
+  • Learning recommendations
+  • Priority-based learning path
+  • Estimated learning hours
+
+📊 History & Reports
+  • View all analyses
+  • Filter by role
+  • Track progress
+  • Download reports
+
+================================================================================
+
+🚀 QUICK START COMMANDS:
+
+# 1. Install dependencies
+cd backend
+pip install -r requirements.txt
+
+# 2. Initialize dataset (after placing CSV)
+python scripts/init_dataset.py --dataset data/raw/jobs_dataset.csv
+
+# 3. Start backend (Terminal 1)
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+# 4. Start frontend (Terminal 2)
+cd ../frontend
+python server.py
+
+# 5. Open browser
+Open: http://localhost:3000/app.html
+
+================================================================================
+
+💾 DATABASE STRUCTURE:
+
+MongoDB Collections Created Automatically:
+  • dataset_skills - All normalized skills (1000+)
+  • dataset_roles - All job roles with required skills
+  • users - User accounts
+  • user_skills - Skills each user has
+  • user_skill_gaps - Analysis history
+  • resumes - Resume upload records
+
+================================================================================
+
+📞 COMMON ERRORS & FIXES:
+
+Error: "Cannot connect to MongoDB"
+→ Check if MongoDB is running
+→ Verify MONGODB_URL in backend/.env
+
+Error: "Dataset not found"
+→ Place CSV at: backend/data/raw/jobs_dataset.csv
+→ Run: python scripts/init_dataset.py
+
+Error: "Module not found"
+→ Install dependencies: pip install -r requirements.txt
+
+Error: "Port already in use"
+→ Change port in command: --port 8001
+
+================================================================================
+
+📋 NEXT STEPS:
+
+1. Download dataset from Kaggle
+2. Place CSV in backend/data/raw/
+3. Configure MongoDB (or use default local)
+4. Run: python scripts/init_dataset.py
+5. Start backend and frontend
+6. Open: http://localhost:3000/app.html
+7. Sign up and test!
+
+================================================================================
+
+👤 Example Test User:
+
+Email: test@example.com
+Password: Test@123
+
+Skills to add: Python, Django, PostgreSQL, Git
+Job role: Python Developer
+
+Expected Match: 80%+ with recommended learning path
+
+================================================================================
+
+📖 For detailed info, see: SETUP_GUIDE.md
+
+System Ready! 🎉

@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+env/
+venv/
+.venv/
+build/
+dist/
+*.egg-info/
+
+# Virtual environment
+/.venv
+
+# IDE/editor
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+backend/logs/
+
+# Data
+backend/data/processed/
+backend/data/raw/uploads/
+
+# Credentials
+.env
+*.pem
+
+# Node
+node_modules/

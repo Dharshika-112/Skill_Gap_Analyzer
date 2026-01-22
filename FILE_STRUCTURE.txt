@@ -1,0 +1,325 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║              📁 PROJECT STRUCTURE & FILE LOCATIONS                              ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+PROJECT FOLDER:
+c:\Users\dsdha\OneDrive\Documents\Skill_Gap_Analyser\
+
+═════════════════════════════════════════════════════════════════════════════════
+
+📚 DOCUMENTATION FILES (Read First)
+
+│
+├─ 📄 README_YOUR_ACTION_ITEMS.txt ⭐ START HERE
+│  └─ 3-step setup with commands
+│  └─ How ML works explained
+│  └─ Example user journey
+│
+├─ 📄 SETUP_GUIDE.md
+│  └─ Complete detailed setup guide
+│  └─ Feature explanations
+│  └─ Troubleshooting section
+│
+├─ 📄 SYSTEM_READY.txt
+│  └─ Architecture overview
+│  └─ File structure guide
+│  └─ Database schema
+│
+├─ 📄 DATASET_INSTRUCTIONS.txt
+│  └─ Where to place dataset
+│  └─ Expected CSV format
+│  └─ MongoDB options
+│
+├─ 📄 DOCUMENTATION_INDEX.md
+│  └─ This guide
+│  └─ File reference
+│  └─ Quick commands
+│
+└─ 📄 START.bat
+   └─ Click to launch (Windows)
+   └─ Auto-starts backend & frontend
+
+═════════════════════════════════════════════════════════════════════════════════
+
+🔧 BACKEND FOLDER: backend/
+
+backend/
+│
+├─ 📄 requirements.txt ⭐ MUST READ
+│  └─ All Python dependencies
+│  └─ Updated with ML/DL libraries
+│
+├─ 📄 .env.example
+│  └─ Copy to .env
+│  └─ Add MongoDB URL here
+│
+├─ 📁 data/
+│  └─ raw/
+│     └─ 📍 PLACE YOUR jobs_dataset.csv HERE
+│
+├─ 📁 scripts/
+│  └─ init_dataset.py ⭐ IMPORTANT
+│     └─ Run this to initialize dataset
+│     └─ Command: python init_dataset.py --dataset data/raw/jobs_dataset.csv
+│
+└─ 📁 app/
+   │
+   ├─ 📄 main.py ⭐ FastAPI Application
+   │  └─ Server startup
+   │  └─ Route registration
+   │
+   ├─ 📁 core/
+   │  ├─ 📄 config.py ⭐ MongoDB Configuration
+   │  │  └─ Connection URL setup
+   │  │  └─ Edit this for campus MongoDB
+   │  ├─ 📄 database.py
+   │  │  └─ MongoDB initialization
+   │  └─ 📄 security.py
+   │     └─ Password hashing
+   │     └─ JWT token generation
+   │
+   ├─ 📁 services/ (NEW - ML/Dataset)
+   │  ├─ 📄 dataset_normalizer.py ⭐ NEW!
+   │  │  └─ Loads your Kaggle CSV
+   │  │  └─ Normalizes 1000+ skills
+   │  │  └─ Extracts 500+ roles
+   │  ├─ 📄 skill_matcher.py ⭐ NEW!
+   │  │  └─ 5 ML algorithms implementation
+   │  │  └─ Ensemble scoring
+   │  │  └─ Learning recommendations
+   │  ├─ 📄 advanced_ml.py
+   │  │  └─ Deep learning module
+   │  └─ 📄 extended_dataset.py
+   │     └─ Default dataset loader
+   │
+   ├─ 📁 models/
+   │  ├─ 📄 user.py
+   │  ├─ 📄 skill.py
+   │  └─ 📄 role.py
+   │
+   ├─ 📁 schemas/
+   │  ├─ 📄 user.py
+   │  └─ 📄 skill.py
+   │
+   └─ 📁 api/
+      └─ routes/
+         ├─ 📄 auth.py
+         │  └─ Signup endpoint
+         │  └─ Login endpoint
+         ├─ 📄 skills.py
+         │  └─ Add/remove skills
+         │  └─ Get user skills
+         │  └─ History management
+         └─ 📄 data.py ⭐ UPDATED!
+            └─ Skill gap analysis (uses new ML)
+            └─ Learning path generation
+            └─ Role recommendations
+            └─ Dataset info endpoints
+
+═════════════════════════════════════════════════════════════════════════════════
+
+🎨 FRONTEND FOLDER: frontend/
+
+frontend/
+│
+├─ 📄 app.html ⭐ Main Application (2000+ lines)
+│  └─ Beautiful responsive UI
+│  └─ All features integrated
+│  └─ Real-time updates
+│
+├─ 📄 server.py
+│  └─ HTTP server
+│  └─ Port 3000
+│  └─ CORS configuration
+│
+├─ 📁 public/
+│  └─ Static files
+│
+├─ 📁 styles/
+│  └─ main.css
+│     └─ Styling & gradients
+│
+└─ 📁 utils/
+   └─ Utility scripts
+
+═════════════════════════════════════════════════════════════════════════════════
+
+⚡ KEY FILES TO KNOW
+
+TO START:
+1. backend/requirements.txt
+   └─ pip install -r requirements.txt
+
+2. backend/scripts/init_dataset.py
+   └─ python scripts/init_dataset.py --dataset data/raw/jobs_dataset.csv
+
+3. backend/app/main.py
+   └─ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+4. frontend/server.py
+   └─ python server.py
+
+5. frontend/app.html
+   └─ http://localhost:3000/app.html
+
+TO CONFIGURE:
+1. backend/.env
+   └─ Set MONGODB_URL here
+
+2. backend/app/core/config.py
+   └─ MongoDB connection settings
+
+TO DEPLOY:
+1. backend/requirements.txt
+   └─ All dependencies listed
+
+2. frontend/app.html
+   └─ Ready to serve
+
+═════════════════════════════════════════════════════════════════════════════════
+
+📊 MONGODB COLLECTIONS (Auto-created)
+
+When you run init_dataset.py, these are created:
+
+1. dataset_skills
+   └─ All skills from your CSV
+   └─ 1000+ documents
+
+2. dataset_roles
+   └─ All roles from your CSV
+   └─ 500+ documents
+
+3. users
+   └─ User accounts
+   └─ Created on signup
+
+4. user_skills
+   └─ What each user has
+   └─ Updated when user adds skills
+
+5. user_skill_gaps
+   └─ Analysis history
+   └─ Created after each analysis
+
+6. resumes
+   └─ Resume metadata
+   └─ For resume uploads
+
+═════════════════════════════════════════════════════════════════════════════════
+
+🚀 EXACT COMMANDS TO RUN
+
+Step 1: Install Dependencies
+    cd backend
+    pip install -r requirements.txt
+
+Step 2: Initialize Dataset
+    python scripts/init_dataset.py --dataset data/raw/jobs_dataset.csv
+
+Step 3: Start Backend (Terminal 1)
+    python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+Step 4: Start Frontend (Terminal 2)
+    cd ../frontend
+    python server.py
+
+Step 5: Open Browser (Terminal 3 or new tab)
+    http://localhost:3000/app.html
+
+═════════════════════════════════════════════════════════════════════════════════
+
+🎯 QUICK CHECKLIST
+
+Before You Start:
+□ Have Kaggle dataset CSV ready
+□ Know your MongoDB URL (or use localhost)
+□ Have Python 3.8+ installed
+□ Have Git installed (optional)
+
+Setup Steps:
+□ Place CSV in: backend/data/raw/jobs_dataset.csv
+□ Edit: backend/.env with MongoDB URL
+□ Run: pip install -r requirements.txt
+□ Run: python scripts/init_dataset.py
+□ See success message
+
+Running:
+□ Terminal 1: python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+□ Terminal 2: cd frontend; python server.py
+□ Browser: http://localhost:3000/app.html
+
+Testing:
+□ See login page loads
+□ Create test account
+□ Add some skills
+□ Select a role
+□ Click analyze
+□ See results with ML scores
+
+═════════════════════════════════════════════════════════════════════════════════
+
+📈 PORTS USED
+
+3000  - Frontend server (frontend/server.py)
+8000  - Backend API (uvicorn)
+27017 - MongoDB (local, default)
+
+Make sure these are available!
+
+═════════════════════════════════════════════════════════════════════════════════
+
+🔒 CONFIGURATION PRIORITY
+
+1. Command line arguments (highest)
+2. Environment variables (.env file)
+3. Default config values (lowest)
+
+Environment variables to set (.env):
+    MONGODB_URL=your_connection_string
+    MONGODB_DB_NAME=skill_gap_analyzer
+    SECRET_KEY=your_secret_key
+    ENVIRONMENT=development
+
+═════════════════════════════════════════════════════════════════════════════════
+
+✨ NEW FILES CREATED FOR YOU
+
+dataset_normalizer.py
+    └─ Loads your Kaggle CSV
+    └─ Normalizes 1000+ skills
+    └─ Extracts 500+ roles
+    └─ Manages dataset lifecycle
+
+skill_matcher.py
+    └─ 5 ML algorithms
+    └─ Ensemble scoring
+    └─ Role ranking
+    └─ Learning recommendations
+
+These are the core of your ML/DL system!
+
+═════════════════════════════════════════════════════════════════════════════════
+
+🎓 NEXT STEPS
+
+1. Read README_YOUR_ACTION_ITEMS.txt (5 min)
+2. Download Kaggle dataset
+3. Place in backend/data/raw/jobs_dataset.csv
+4. Edit backend/.env with MongoDB URL
+5. Run init_dataset.py
+6. Start servers
+7. Open application
+8. Test with real data
+
+═════════════════════════════════════════════════════════════════════════════════
+
+📞 NEED HELP?
+
+Check these files:
+1. README_YOUR_ACTION_ITEMS.txt - Quick start
+2. SETUP_GUIDE.md - Detailed setup
+3. DOCUMENTATION_INDEX.md - File reference
+4. DATASET_INSTRUCTIONS.txt - Dataset info
+
+═════════════════════════════════════════════════════════════════════════════════
