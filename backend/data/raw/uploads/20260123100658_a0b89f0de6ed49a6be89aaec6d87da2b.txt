@@ -1,0 +1,27 @@
+
+    John Doe
+    Software Developer
+    
+    TECHNICAL SKILLS
+    • Programming: Python, C, DSA, Java
+    • Web: HTML, CSS, JavaScript, ReactJS
+    • Database: SQL, DBMS
+    • AI & Data Science: Machine Learning, Deep Learning, AI Deployment
+    • Tools & Platform: Git, GitHub, Docker
+    
+    CERTIFICATIONS & COURSES
+    • CISCO - Python Essentials
+    • Google - Foundations of Data Science
+    • CU Boulder - Foundations of DSA (Specialization)
+    • IBM - Machine Learning with Python
+    • Juniper - NCIA-Cloud / Mist AI Associate
+    • Infosys – Programming Fundamentals Using Java
+    
+    EXPERIENCE
+    Software Developer Intern at TechCorp (6 months)
+    - Developed web applications using React and Node.js
+    - Worked with Python for data analysis
+    
+    EDUCATION
+    Bachelor of Computer Science
+    

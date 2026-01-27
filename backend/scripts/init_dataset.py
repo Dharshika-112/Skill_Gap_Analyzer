@@ -112,8 +112,8 @@ def init_dataset(dataset_path: str):
 
 def main():
     parser = argparse.ArgumentParser(description='Initialize dataset in MongoDB')
-    parser.add_argument('--dataset', type=str, help='Path to Kaggle dataset CSV', 
-                       default='../data/raw/jobs_dataset.csv')
+    parser.add_argument('--dataset', type=str, help='Path to dataset CSV', 
+                       default='data/raw/job_dataset.csv')
     
     args = parser.parse_args()
     
@@ -132,6 +132,20 @@ def main():
             candidate_path = backend_dir / dataset_path
             if candidate_path.exists():
                 dataset_path = str(candidate_path)
+            else:
+                # Try common variations
+                variations = [
+                    'data/raw/job_dataset.csv',
+                    'data/raw/jobs_dataset.csv',
+                    '../data/raw/job_dataset.csv',
+                    '../data/raw/jobs_dataset.csv',
+                ]
+                for var in variations:
+                    test_path = backend_dir / var
+                    if test_path.exists():
+                        dataset_path = str(test_path)
+                        print(f"[*] Found dataset at: {dataset_path}")
+                        break
     
     print("""
     ╔═══════════════════════════════════════════════════════════════╗

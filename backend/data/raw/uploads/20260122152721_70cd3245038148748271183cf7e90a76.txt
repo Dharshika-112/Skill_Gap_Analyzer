@@ -1,0 +1,3 @@
+Skills: Python, JavaScript, SQL, Machine Learning
+Experience: 2 years in software development
+Education: Computer Science

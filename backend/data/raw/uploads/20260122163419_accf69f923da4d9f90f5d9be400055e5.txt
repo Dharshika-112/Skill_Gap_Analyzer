@@ -1,0 +1,28 @@
+
+    JOHN DOE
+    Software Developer | Full Stack Engineer
+    
+    TECHNICAL SKILLS:
+    Programming Languages: Python, JavaScript, Java, C++, TypeScript
+    Web Technologies: React, Node.js, Express.js, HTML5, CSS3, Bootstrap
+    Databases: MySQL, MongoDB, PostgreSQL, Redis
+    Cloud Platforms: AWS, Azure, Docker, Kubernetes
+    Tools & Frameworks: Git, Jenkins, Django, Flask, Spring Boot
+    Machine Learning: TensorFlow, PyTorch, Scikit-learn, Pandas, NumPy
+    
+    PROFESSIONAL EXPERIENCE:
+    Software Developer Intern - Tech Company (6 months)
+    - Developed web applications using React and Node.js
+    - Worked with MySQL databases and REST APIs
+    - Collaborated with senior developers on machine learning projects
+    
+    Full-time Software Engineer - Innovation Corp (2 years)
+    - Built scalable web applications using Python and Django
+    - Implemented CI/CD pipelines with Jenkins and Docker
+    - Worked on data analysis projects using Python and SQL
+    
+    PROJECTS:
+    - E-commerce Platform: Built using React, Node.js, and MongoDB
+    - Machine Learning Model: Developed predictive models using TensorFlow
+    - Cloud Deployment: Deployed applications on AWS with Docker containers
+    

@@ -6,19 +6,14 @@ Enhanced with Deep Learning and ML algorithms
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import sys
-from pathlib import Path
 
-# Add current directory to path
-sys.path.insert(0, str(Path(__file__).parent))
+# Import routes with correct path
+from app.api.routes import auth, skills, data, resume_analysis
 
-# Import routes
-from api.routes import auth, skills, data
-
-# Import database and ML services
-from core.database import get_database
-from services.advanced_ml import analyzer, get_skill_gap_analysis, get_learning_path
-from services.extended_dataset import get_dataset_summary
+# Import database and ML services with correct path
+from app.core.database import get_database
+from app.services.advanced_ml import analyzer, get_skill_gap_analysis, get_learning_path
+from app.services.extended_dataset import get_dataset_summary
 
 # Create FastAPI app
 app = FastAPI(
@@ -78,6 +73,7 @@ async def api_info():
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(skills.router, prefix="/api/skills", tags=["Skills"])
 app.include_router(data.router, prefix="/api/data", tags=["Data"])
+app.include_router(resume_analysis.router, prefix="/api/resume", tags=["Resume Analysis"])
 
 # Initialize database on startup
 @app.on_event("startup")

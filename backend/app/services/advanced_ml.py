@@ -10,17 +10,20 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.metrics.pairwise import cosine_similarity
+from .role_matcher import enhanced_match_score
+from .skill_cleaner import clean_skill_list
+from .experience_weighting import get_experience_weight
 import json
 import os
 from pathlib import Path
 
 try:
-    from tensorflow.keras.models import Sequential
-    from tensorflow.keras.layers import Dense, Dropout, Input
-    from tensorflow.keras.optimizers import Adam
-    import tensorflow as tf
+    from tensorflow.keras.models import Sequential  # type: ignore
+    from tensorflow.keras.layers import Dense, Dropout, Input  # type: ignore
+    from tensorflow.keras.optimizers import Adam  # type: ignore
+    import tensorflow as tf  # type: ignore
     TF_AVAILABLE = True
-except:
+except ImportError:
     TF_AVAILABLE = False
 
 class AdvancedSkillGapAnalyzer:
@@ -76,37 +79,24 @@ class AdvancedSkillGapAnalyzer:
         user_skills_set = set([s.lower() for s in user_skills])
         role_skills_set = set([s.lower() for s in role_skills])
         
-        # 1. Jaccard Similarity (Set-based)
-        intersection = len(user_skills_set & role_skills_set)
-        union = len(user_skills_set | role_skills_set)
-        jaccard_score = (intersection / union * 100) if union > 0 else 0
-        
-        # 2. TF-IDF Based Similarity
-        tfidf_score = self._calculate_tfidf_similarity(user_skills, role_skills)
-        
-        # 3. Cosine Similarity
-        cosine_score = self._calculate_cosine_similarity(user_skills, role_skills)
-        
-        # 4. Deep Learning Prediction (if available and trained)
+        # Use role_matcher enhanced score
+        cleaned_user = clean_skill_list(list(user_skills_set))
+        cleaned_role = clean_skill_list(list(role_skills_set))
+
+        enhanced = enhanced_match_score(cleaned_user, cleaned_role, {})
+
         dl_score = self._calculate_deep_learning_score(user_skills, role_skills) if self.is_trained else None
-        
-        # Ensemble scoring
-        scores = [jaccard_score, tfidf_score, cosine_score]
-        if dl_score is not None:
-            scores.append(dl_score)
-        
-        average_score = sum(scores) / len(scores)
-        
-        # Calculate missing and matching skills
+
+        # Build response, include legacy metrics
         matching_skills = list(user_skills_set & role_skills_set)
         missing_skills = list(role_skills_set - user_skills_set)
         extra_skills = list(user_skills_set - role_skills_set)
-        
+
         return {
-            'match_percentage': round(average_score, 2),
-            'jaccard_score': round(jaccard_score, 2),
-            'tfidf_score': round(tfidf_score, 2),
-            'cosine_score': round(cosine_score, 2),
+            'match_percentage': enhanced['score'],
+            'jaccard_score': round(enhanced['jaccard'] * 100, 2),
+            'tfidf_score': round(enhanced['cosine'] * 100, 2),
+            'cosine_score': round(enhanced['cosine'] * 100, 2),
             'deep_learning_score': round(dl_score, 2) if dl_score else None,
             'matching_skills': matching_skills,
             'missing_skills': missing_skills,

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Frontend Functions</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        .error { color: red; }
+        .success { color: green; }
+        .log { background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Frontend Function Debug</h1>
+    
+    <div class="test-section">
+        <h2>1. JavaScript Loading Test</h2>
+        <button onclick="testJavaScriptLoading()">Test JS Loading</button>
+        <div id="js-test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Function Availability Test</h2>
+        <button onclick="testFunctionAvailability()">Test Functions</button>
+        <div id="function-test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Direct Function Call Test</h2>
+        <input type="text" id="test-name" placeholder="Name" value="Test User">
+        <input type="email" id="test-email" placeholder="Email" value="test@example.com">
+        <input type="password" id="test-password" placeholder="Password" value="testpass123">
+        <br><br>
+        <button onclick="testSignupDirect()">Test Signup Function</button>
+        <button onclick="testLoginDirect()">Test Login Function</button>
+        <div id="direct-test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Console Log</h2>
+        <div id="console-log" class="log"></div>
+        <button onclick="clearConsoleLog()">Clear Log</button>
+    </div>
+
+    <script>
+        // Override console.log to capture logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        function logToDiv(message, type = 'log') {
+            const logDiv = document.getElementById('console-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'red' : type === 'warn' ? 'orange' : 'black';
+            logDiv.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logToDiv(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            logToDiv(args.join(' '), 'error');
+        };
+        
+        function clearConsoleLog() {
+            document.getElementById('console-log').innerHTML = '';
+        }
+        
+        function testJavaScriptLoading() {
+            const result = document.getElementById('js-test-result');
+            
+            console.log('Testing JavaScript loading...');
+            
+            // Check if basic JS works
+            try {
+                const testVar = 'JavaScript is working';
+                result.innerHTML = `<div class="success">✅ ${testVar}</div>`;
+                console.log('Basic JavaScript: OK');
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ JavaScript Error: ${error}</div>`;
+                console.error('Basic JavaScript failed:', error);
+            }
+        }
+        
+        function testFunctionAvailability() {
+            const result = document.getElementById('function-test-result');
+            let html = '';
+            
+            console.log('Testing function availability...');
+            
+            // Check if functions exist
+            const functions = ['signup', 'login', 'showPage', 'showDashboard'];
+            
+            functions.forEach(funcName => {
+                if (typeof window[funcName] === 'function') {
+                    html += `<div class="success">✅ ${funcName}() - Available</div>`;
+                    console.log(`Function ${funcName}: Available`);
+                } else {
+                    html += `<div class="error">❌ ${funcName}() - Not Found</div>`;
+                    console.error(`Function ${funcName}: Not Found`);
+                }
+            });
+            
+            result.innerHTML = html;
+        }
+        
+        function testSignupDirect() {
+            const result = document.getElementById('direct-test-result');
+            
+            console.log('Testing signup function directly...');
+            
+            try {
+                // Set test values
+                if (document.getElementById('signup-name')) {
+                    document.getElementById('signup-name').value = document.getElementById('test-name').value;
+                }
+                if (document.getElementById('signup-email')) {
+                    document.getElementById('signup-email').value = document.getElementById('test-email').value;
+                }
+                if (document.getElementById('signup-password')) {
+                    document.getElementById('signup-password').value = document.getElementById('test-password').value;
+                }
+                
+                if (typeof signup === 'function') {
+                    console.log('Calling signup function...');
+                    signup();
+                    result.innerHTML = '<div class="success">✅ Signup function called</div>';
+                } else {
+                    result.innerHTML = '<div class="error">❌ Signup function not available</div>';
+                    console.error('Signup function not available');
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Signup error: ${error}</div>`;
+                console.error('Signup test error:', error);
+            }
+        }
+        
+        function testLoginDirect() {
+            const result = document.getElementById('direct-test-result');
+            
+            console.log('Testing login function directly...');
+            
+            try {
+                // Set test values
+                if (document.getElementById('login-email')) {
+                    document.getElementById('login-email').value = document.getElementById('test-email').value;
+                }
+                if (document.getElementById('login-password')) {
+                    document.getElementById('login-password').value = document.getElementById('test-password').value;
+                }
+                
+                if (typeof login === 'function') {
+                    console.log('Calling login function...');
+                    login();
+                    result.innerHTML = '<div class="success">✅ Login function called</div>';
+                } else {
+                    result.innerHTML = '<div class="error">❌ Login function not available</div>';
+                    console.error('Login function not available');
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Login error: ${error}</div>`;
+                console.error('Login test error:', error);
+            }
+        }
+        
+        // Test on page load
+        window.addEventListener('load', function() {
+            console.log('Page loaded, running initial tests...');
+            testJavaScriptLoading();
+            setTimeout(testFunctionAvailability, 1000);
+        });
+        
+        // Check for script loading errors
+        window.addEventListener('error', function(e) {
+            console.error('Script error:', e.error, 'at', e.filename, ':', e.lineno);
+        });
+    </script>
+    
+    <!-- Include the main app.js to test -->
+    <script src="static/app.js"></script>
+    <script src="static/error-handler.js"></script>
+</body>
+</html>

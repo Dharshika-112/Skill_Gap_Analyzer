@@ -1,10 +1,20 @@
 """
-Enhanced Dataset Manager with multiple data sources
-Includes IT, Business, Creative, and Emerging Tech skills
+Dataset access layer.
+
+This project supports TWO sources of dataset data:
+- MongoDB collections created by `backend/scripts/init_dataset.py`:
+  - dataset_skills
+  - dataset_roles
+- A built-in "extended" fallback dataset (hardcoded below) used when MongoDB
+  is not initialized yet.
+
+All API routes should call the functions in this module so the app automatically
+uses the real Kaggle dataset when available.
 """
 
-import json
-from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+from ..core.database import get_collection
 
 EXTENDED_SKILLS_DATASET = {
     "programming_languages": [
@@ -133,68 +143,155 @@ EXTENDED_ROLES_DATASET = {
     ]
 }
 
-def get_extended_skills():
-    """Return all extended skills organized by category"""
-    all_skills = []
-    for category, skills in EXTENDED_SKILLS_DATASET.items():
+def _safe_list(col) -> List[dict]:
+    try:
+        return list(col.find({}))
+    except Exception:
+        return []
+
+def get_dataset_skills() -> List[str]:
+    """
+    Return dataset skills.
+    Prefers MongoDB (`dataset_skills`) if initialized; otherwise uses fallback list.
+    """
+    try:
+        col = get_collection("dataset_skills")
+        docs = _safe_list(col)
+        skills = [d.get("skill") for d in docs if d.get("skill")]
+        if skills:
+            # Keep original casing from DB, but stable sort for UI
+            return sorted(list({s.strip() for s in skills if str(s).strip()}), key=lambda x: x.lower())
+    except Exception:
+        pass
+
+    # fallback
+    all_skills: List[str] = []
+    for _, skills in EXTENDED_SKILLS_DATASET.items():
         all_skills.extend(skills)
-    return sorted(list(set(all_skills)))
+    return sorted(list(set(all_skills)), key=lambda x: x.lower())
 
-def get_extended_roles():
-    """Return all extended roles organized by category"""
-    all_roles = []
-    for category, roles in EXTENDED_ROLES_DATASET.items():
+def get_dataset_roles() -> List[Dict[str, Any]]:
+    """
+    Return dataset roles.
+    Prefers MongoDB (`dataset_roles`) if initialized; otherwise uses fallback roles.
+
+    MongoDB format:
+      {_id: "<title>_<level>", title: "...", level: "...", skills: [...]}
+    """
+    try:
+        col = get_collection("dataset_roles")
+        docs = _safe_list(col)
+        roles: List[Dict[str, Any]] = []
+        for d in docs:
+            roles.append(
+                {
+                    "id": str(d.get("_id")),
+                    "title": d.get("title"),
+                    "level": d.get("level"),
+                }
+            )
+        # If mongo has data, return it
+        if any(r.get("title") for r in roles):
+            roles = [r for r in roles if r.get("title")]
+            return sorted(roles, key=lambda r: (str(r.get("title")).lower(), str(r.get("level") or "").lower()))
+    except Exception:
+        pass
+
+    # fallback: flatten the built-in list
+    all_roles: List[str] = []
+    for _, roles in EXTENDED_ROLES_DATASET.items():
         all_roles.extend(roles)
-    return sorted(list(set(all_roles)))
+    return [{"id": r.lower().replace(" ", "_"), "title": r, "level": "unknown"} for r in sorted(list(set(all_roles)), key=lambda x: x.lower())]
 
-def get_role_requirements(role_name):
-    """Get required skills for a specific role"""
-    role_name_lower = role_name.lower()
-    
+def get_role_requirements(role_ref: str) -> List[str]:
+    """
+    Get required skills for a role.
+
+    `role_ref` can be:
+    - a MongoDB role document id (preferred): "<title>_<level>"
+    - a role title (fallback)
+    """
+    # 1) Try Mongo by _id
+    try:
+        col = get_collection("dataset_roles")
+        doc = col.find_one({"_id": role_ref})
+        if doc and doc.get("skills"):
+            return [s for s in doc.get("skills", []) if s]
+    except Exception:
+        pass
+
+    # 2) Try Mongo by title
+    try:
+        col = get_collection("dataset_roles")
+        doc = col.find_one({"title": {"$regex": f"^{role_ref}$", "$options": "i"}})
+        if doc and doc.get("skills"):
+            return [s for s in doc.get("skills", []) if s]
+    except Exception:
+        pass
+
+    # 3) Fallback mapping (built-in)
+    role_name_lower = (role_ref or "").lower()
+
     role_skill_mapping = {
-        "software engineer": EXTENDED_SKILLS_DATASET["programming_languages"] + 
-                            EXTENDED_SKILLS_DATASET["web_technologies"] +
-                            EXTENDED_SKILLS_DATASET["devops_tools"][:5] +
-                            ["Git", "REST API", "SQL"],
-        
-        "data scientist": EXTENDED_SKILLS_DATASET["ai_ml_tools"] +
-                         EXTENDED_SKILLS_DATASET["data_analytics"] +
-                         ["Python", "SQL", "Statistics"],
-        
-        "cloud architect": EXTENDED_SKILLS_DATASET["cloud_platforms"] +
-                          EXTENDED_SKILLS_DATASET["devops_tools"] +
-                          ["Kubernetes", "Terraform", "Networking"],
-        
-        "security engineer": EXTENDED_SKILLS_DATASET["security_skills"] +
-                            ["Python", "Networking", "Linux", "Windows"],
-        
-        "ux designer": EXTENDED_SKILLS_DATASET["creative_skills"] +
-                      EXTENDED_SKILLS_DATASET["business_skills"][:3] +
-                      ["User Research", "Accessibility"],
-        
-        "ai engineer": EXTENDED_SKILLS_DATASET["ai_ml_tools"] +
-                      EXTENDED_SKILLS_DATASET["programming_languages"][:5] +
-                      ["Deep Learning", "Data Engineering"],
+        "software engineer": EXTENDED_SKILLS_DATASET["programming_languages"]
+        + EXTENDED_SKILLS_DATASET["web_technologies"]
+        + EXTENDED_SKILLS_DATASET["devops_tools"][:5]
+        + ["Git", "REST API", "SQL"],
+        "data scientist": EXTENDED_SKILLS_DATASET["ai_ml_tools"]
+        + EXTENDED_SKILLS_DATASET["data_analytics"]
+        + ["Python", "SQL", "Statistics"],
+        "cloud architect": EXTENDED_SKILLS_DATASET["cloud_platforms"]
+        + EXTENDED_SKILLS_DATASET["devops_tools"]
+        + ["Kubernetes", "Terraform", "Networking"],
+        "security engineer": EXTENDED_SKILLS_DATASET["security_skills"] + ["Python", "Networking", "Linux", "Windows"],
+        "ux designer": EXTENDED_SKILLS_DATASET["creative_skills"] + EXTENDED_SKILLS_DATASET["business_skills"][:3] + ["User Research", "Accessibility"],
+        "ai engineer": EXTENDED_SKILLS_DATASET["ai_ml_tools"] + EXTENDED_SKILLS_DATASET["programming_languages"][:5] + ["Deep Learning", "Data Engineering"],
     }
-    
-    # Default skills for any role
+
     for role, skills in role_skill_mapping.items():
         if role in role_name_lower:
             return skills
-    
-    # Return generic skills if role not specifically mapped
-    return EXTENDED_SKILLS_DATASET["programming_languages"][:5] + \
-           EXTENDED_SKILLS_DATASET["soft_skills"][:5]
+
+    return EXTENDED_SKILLS_DATASET["programming_languages"][:5] + EXTENDED_SKILLS_DATASET["soft_skills"][:5]
 
 def get_dataset_summary():
-    """Return summary of available datasets"""
+    """Return summary; prefers MongoDB stats if available."""
+    # Prefer dataset_stats collection if present
+    try:
+        stats_col = get_collection("ml_models")  # not ideal; keep backward compatibility
+    except Exception:
+        stats_col = None
+
+    try:
+        # init_dataset stores stats in `dataset_stats` directly (not in COLLECTIONS)
+        db = get_collection("users").database  # reuse existing connection
+        stats_doc = db["dataset_stats"].find_one({"_id": "main"})
+        if stats_doc:
+            return {
+                "source": "mongodb",
+                "total_skills": stats_doc.get("total_skills"),
+                "total_roles": stats_doc.get("total_roles"),
+                "common_skills": stats_doc.get("common_skills", [])[:20],
+                "roles_by_level": stats_doc.get("roles_by_level", {}),
+            }
+    except Exception:
+        pass
+
+    # fallback summary
     return {
-        "total_skills": len(get_extended_skills()),
-        "total_roles": len(get_extended_roles()),
+        "source": "fallback",
+        "total_skills": len(get_dataset_skills()),
+        "total_roles": len(get_dataset_roles()),
         "skill_categories": len(EXTENDED_SKILLS_DATASET),
         "role_categories": len(EXTENDED_ROLES_DATASET),
-        "categories": {
-            "skills": list(EXTENDED_SKILLS_DATASET.keys()),
-            "roles": list(EXTENDED_ROLES_DATASET.keys())
-        }
+        "categories": {"skills": list(EXTENDED_SKILLS_DATASET.keys()), "roles": list(EXTENDED_ROLES_DATASET.keys())},
     }
+
+# Backwards-compatible names used throughout the repo
+def get_extended_skills() -> List[str]:
+    return get_dataset_skills()
+
+def get_extended_roles():
+    # Old code expects List[str]; keep for compatibility but prefer the new structured list in API.
+    roles = get_dataset_roles()
+    return [r["title"] for r in roles if r.get("title")]

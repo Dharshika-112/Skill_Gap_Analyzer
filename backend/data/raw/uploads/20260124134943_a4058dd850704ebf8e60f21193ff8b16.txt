@@ -1,0 +1,41 @@
+
+    John Smith
+    Senior Software Engineer
+    
+    TECHNICAL SKILLS
+    • Programming Languages: Python, Java, JavaScript, TypeScript, C++, Go
+    • Frontend: React, Angular, Vue.js, HTML5, CSS3, Bootstrap, Tailwind CSS
+    • Backend: Node.js, Express, Django, Flask, Spring Boot, FastAPI
+    • Databases: PostgreSQL, MongoDB, MySQL, Redis, Elasticsearch
+    • Cloud & DevOps: AWS, Azure, Docker, Kubernetes, Jenkins, Git, GitHub
+    • Machine Learning: TensorFlow, PyTorch, Scikit-learn, Pandas, NumPy
+    • Mobile: React Native, Flutter, Android, iOS
+    • Tools: VS Code, IntelliJ, Postman, Jira, Slack
+    
+    CERTIFICATIONS
+    • AWS Certified Solutions Architect
+    • Google Cloud Professional Developer
+    • Microsoft Azure Developer Associate
+    
+    EXPERIENCE
+    Senior Software Engineer at TechCorp (4 years)
+    - Led development of microservices architecture serving 1M+ users
+    - Implemented CI/CD pipelines reducing deployment time by 60%
+    - Built ML-powered recommendation systems with 95% accuracy
+    - Managed team of 5 developers using Agile methodologies
+    
+    Software Engineer at StartupXYZ (2 years)
+    - Developed full-stack web applications using React and Node.js
+    - Designed and implemented RESTful APIs handling 10K+ requests/day
+    - Optimized database queries improving performance by 40%
+    
+    PROJECTS
+    • E-commerce Platform: Built scalable platform using React, Node.js, MongoDB
+    • AI Chatbot: Developed NLP-powered chatbot using Python and TensorFlow
+    • Mobile App: Created cross-platform app using React Native
+    • Data Pipeline: Built ETL pipeline processing 1TB+ data daily
+    
+    EDUCATION
+    Master of Science in Computer Science
+    Bachelor of Technology in Software Engineering
+    

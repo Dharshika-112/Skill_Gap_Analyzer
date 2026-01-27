@@ -1,0 +1,4 @@
+John Doe
+Experience: 2 years
+Skills: Python, SQL, TensorFlow, leadership
+Internship at ABC Corp

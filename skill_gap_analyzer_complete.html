@@ -1,0 +1,3089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerBoost AI - Professional Skill Gap Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .profile-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .profile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Landing Page */
+        .landing-page {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+            animation: fadeInUp 1s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Auth Forms */
+        .auth-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .auth-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .welcome-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Feature Sections */
+        .feature-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .feature-section.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-icon {
+            font-size: 2.5rem;
+        }
+
+        /* Skill Selection */
+        .skill-input-container {
+            margin-bottom: 2rem;
+        }
+
+        .skill-search {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .skill-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .skill-category {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .skill-category:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .category-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            padding: 0.5rem 1rem;
+            background: #e1e8ed;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .skill-tag:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .skill-tag.selected {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .selected-skills {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .selected-skills h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        /* Results Display */
+        .results-container {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .results-container.active {
+            display: block;
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            position: relative;
+            animation: scaleIn 0.8s ease;
+        }
+
+        .score-excellent { background: linear-gradient(45deg, #27ae60, #2ecc71); }
+        .score-good { background: linear-gradient(45deg, #f39c12, #e67e22); }
+        .score-average { background: linear-gradient(45deg, #e67e22, #d35400); }
+        .score-poor { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+
+        .score-info {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Skills Comparison */
+        .skills-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .skills-column {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .skills-column.missing {
+            border-left-color: #e74c3c;
+        }
+
+        .skills-column h4 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .skill-item {
+            display: inline-block;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.25rem;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .skill-item.matched {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .skill-item.missing {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Suggestions */
+        .suggestions {
+            background: linear-gradient(45deg, #fff3cd, #ffeaa7);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .suggestions h3 {
+            color: #856404;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .suggestion-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .suggestion-icon {
+            font-size: 1.5rem;
+            margin-top: 0.2rem;
+        }
+
+        .suggestion-text {
+            flex: 1;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Profile Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: scaleIn 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .score-display {
+                flex-direction: column;
+            }
+            
+            .skills-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Job Cards */
+        .job-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 4px solid #27ae60;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .job-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .job-card.excellent { border-left-color: #27ae60; }
+        .job-card.good { border-left-color: #f39c12; }
+        .job-card.average { border-left-color: #e67e22; }
+        .job-card.poor { border-left-color: #e74c3c; }
+
+        .job-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .job-experience {
+            background: #ecf0f1;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #2c3e50;
+        }
+
+        .job-match-score {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .job-match-score.excellent { color: #27ae60; }
+        .job-match-score.good { color: #f39c12; }
+        .job-match-score.average { color: #e67e22; }
+        .job-match-score.poor { color: #e74c3c; }
+
+        .job-skills {
+            margin-bottom: 1rem;
+        }
+
+        .job-skills h5 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .job-skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+
+        .job-skill-tag {
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .job-skill-tag.matched {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .job-skill-tag.missing {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .no-jobs-found {
+            text-align: center;
+            padding: 3rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .no-jobs-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .no-jobs-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .no-jobs-message {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Role Selection Improvements */
+        #target-role {
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        #target-role option {
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .role-count {
+            background: #667eea;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Analysis Summary */
+        .analysis-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .summary-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .summary-stat {
+            text-align: center;
+        }
+
+        .summary-stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .summary-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Resume Scoring Options */
+        .resume-scoring-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .scoring-option-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .scoring-option-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .scoring-option-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .scoring-option-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .current-skills-summary {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 2px solid #e1e8ed;
+        }
+
+        .current-skills-summary.has-skills {
+            border-color: #27ae60;
+            background: #d4edda;
+        }
+
+        .current-skills-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .current-skill-tag {
+            background: #667eea;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        /* ATS Score Display */
+        .ats-score-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .ats-score-main {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .ats-score-category {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .ats-score-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .ats-detail {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .ats-detail-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .ats-detail-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Role Scoring Cards */
+        .role-scoring-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .role-score-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+            transition: all 0.3s ease;
+        }
+
+        .role-score-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .role-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .role-score-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .role-score-percentage {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .role-score-breakdown {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .role-readiness {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .role-readiness.ready { background: #d4edda; color: #155724; }
+        .role-readiness.almost { background: #fff3cd; color: #856404; }
+        .role-readiness.needs-prep { background: #f8d7da; color: #721c24; }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mt-2 { margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">🚀 CareerBoost AI</div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" onclick="showSection('skill-gap')">
+                    🎯 Skill Gap Analyzer
+                </a>
+                <a href="#" class="nav-link" onclick="showSection('resume-scoring')">
+                    📊 Resume Scoring
+                </a>
+                <a href="#" class="nav-link" onclick="showSection('suggestions')">
+                    💡 Improvement Suggestions
+                </a>
+                <button class="profile-btn" onclick="showProfile()">
+                    👤 Profile
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Landing Page -->
+        <div id="landing-page" class="landing-page">
+            <h1 class="hero-title">Welcome to CareerBoost AI</h1>
+            <p class="hero-subtitle">Professional Skill Gap Analysis & Resume Optimization Platform</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Skill Gap Analysis</h3>
+                    <p class="feature-description">
+                        Compare your skills with job requirements from 1000+ real job postings. 
+                        Get precise gap analysis using advanced algorithms.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">ATS Resume Scoring</h3>
+                    <p class="feature-description">
+                        Get your resume scored by our AI model trained on 1000+ resumes. 
+                        See how ATS systems will rate your resume.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💡</div>
+                    <h3 class="feature-title">Smart Suggestions</h3>
+                    <p class="feature-description">
+                        Receive actionable recommendations to improve your resume and 
+                        bridge skill gaps for your target roles.
+                    </p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 3rem;">
+                <button class="btn-primary" onclick="showAuth('login')" style="width: auto; padding: 1rem 3rem; margin: 0 1rem;">
+                    🚀 Get Started - Login
+                </button>
+                <button class="btn-primary" onclick="showAuth('signup')" style="width: auto; padding: 1rem 3rem; margin: 0 1rem; background: linear-gradient(45deg, #764ba2, #667eea);">
+                    ✨ Create Account
+                </button>
+            </div>
+        </div>
+
+        <!-- Authentication Forms -->
+        <div id="auth-container" class="auth-container hidden">
+            <!-- Login Form -->
+            <div id="login-form">
+                <h2 class="auth-title">Welcome Back!</h2>
+                <div class="form-group">
+                    <input type="email" class="form-input" id="login-email" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-input" id="login-password" placeholder="Password" required>
+                </div>
+                <button class="btn-primary" onclick="login()">Login</button>
+                <p class="text-center mt-2">
+                    Don't have an account? 
+                    <a href="#" onclick="showAuth('signup')" style="color: #667eea;">Sign up here</a>
+                </p>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup-form" class="hidden">
+                <h2 class="auth-title">Join CareerBoost AI</h2>
+                <div class="form-group">
+                    <input type="text" class="form-input" id="signup-name" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-input" id="signup-email" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-input" id="signup-password" placeholder="Password" required>
+                </div>
+                <button class="btn-primary" onclick="signup()">Create Account</button>
+                <p class="text-center mt-2">
+                    Already have an account? 
+                    <a href="#" onclick="showAuth('login')" style="color: #667eea;">Login here</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h2 class="welcome-text">Welcome back, <span id="user-name">User</span>! 👋</h2>
+                <p class="user-info">Ready to boost your career with AI-powered insights?</p>
+            </div>
+
+            <!-- Skill Gap Analyzer Section -->
+            <div id="skill-gap-section" class="feature-section active">
+                <h2 class="section-title">
+                    <span class="section-icon">🎯</span>
+                    Skill Gap Analyzer
+                </h2>
+                
+                <div class="skill-input-container">
+                    <h3 style="margin-bottom: 1rem; color: #333;">Step 1: Select Your Skills</h3>
+                    <input type="text" class="skill-search" id="skill-search" placeholder="Search skills..." onkeyup="filterSkills()">
+                    
+                    <div class="skill-categories" id="skill-categories">
+                        <!-- Skills will be loaded here -->
+                    </div>
+                    
+                    <div class="selected-skills">
+                        <h3>Selected Skills (<span id="selected-count">0</span>)</h3>
+                        <div id="selected-skills-display"></div>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 1rem; color: #333;">Step 2: Your Experience Level</h3>
+                        <select class="form-input" id="experience-level" style="margin-bottom: 1rem;">
+                            <option value="">Select your experience level...</option>
+                            <option value="Fresher">Fresher (0-1 years)</option>
+                            <option value="Junior">Junior (1-3 years)</option>
+                            <option value="Mid-level">Mid-level (3-5 years)</option>
+                            <option value="Senior">Senior (5+ years)</option>
+                        </select>
+                        <input type="number" class="form-input" id="experience-years" placeholder="Years of experience" min="0" max="20" step="0.5" style="margin-bottom: 1rem;">
+                        
+                        <button class="btn-primary" onclick="analyzeAllJobs()" id="analyze-all-btn" style="margin-bottom: 1rem;">
+                            🚀 Find Suitable Jobs for My Skills
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Auto Analysis Results -->
+                <div id="auto-analysis-results" class="results-container">
+                    <!-- Auto analysis results will be displayed here -->
+                </div>
+                
+                <!-- Manual Role Selection -->
+                <div id="manual-role-selection" class="feature-section" style="display: none;">
+                    <h3 style="margin-bottom: 1rem; color: #333;">Step 3: Or Select Specific Role to Analyze</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <input type="text" class="form-input" id="role-search" placeholder="Search for specific role..." onkeyup="filterRoles()" style="margin-bottom: 1rem;">
+                        <select class="form-input" id="target-role" style="margin-bottom: 1rem; height: 200px;" multiple>
+                            <!-- All jobs will be loaded here -->
+                        </select>
+                        <p style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
+                            💡 Tip: Hold Ctrl/Cmd to select multiple roles for comparison
+                        </p>
+                        <button class="btn-primary" onclick="analyzeSpecificRoles()" id="analyze-specific-btn">
+                            🎯 Analyze Selected Roles
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="skill-gap-results" class="results-container">
+                    <!-- Specific role analysis results will be displayed here -->
+                </div>
+            </div>
+
+            <!-- Resume Scoring Section -->
+            <div id="resume-scoring-section" class="feature-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📊</span>
+                    ATS Resume Scoring & Analysis
+                </h2>
+                
+                <div style="margin-bottom: 2rem;">
+                    <h3>📄 Step 1: Upload Your Resume</h3>
+                    <p>Upload your resume to extract skills and find suitable jobs automatically</p>
+                    <input type="file" class="form-input" id="resume-file" accept=".pdf,.docx,.txt">
+                    <button class="btn-primary" onclick="uploadAndAnalyzeResume()" id="upload-analyze-btn" style="margin-top: 1rem;">
+                        � Score My Resume
+                    </button>
+                </div>
+                
+                <div id="resume-scoring-results" class="results-container">
+                    <!-- Results will be displayed here -->
+                </div>
+                
+                <!-- Resume Analysis Results -->
+                <div id="resume-analysis-results" class="results-container">
+                    <!-- Auto analysis results will be displayed here -->
+                </div>
+                
+                <!-- Manual Role Selection for Resume -->
+                <div id="resume-manual-role-selection" class="feature-section" style="display: none;">
+                    <h3 style="margin-bottom: 1rem; color: #333;">Step 2: Or Select Specific Roles to Score Against</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <input type="text" class="form-input" id="resume-role-search" placeholder="Search for specific role..." onkeyup="filterResumeRoles()" style="margin-bottom: 1rem;">
+                        <select class="form-input" id="resume-target-roles" style="margin-bottom: 1rem; height: 200px;" multiple>
+                            <!-- All jobs will be loaded here -->
+                        </select>
+                        <p style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
+                            💡 Tip: Hold Ctrl/Cmd to select multiple roles for comparison
+                        </p>
+                        <button class="btn-primary" onclick="scoreResumeForSpecificRoles()" id="score-specific-roles-btn">
+                            🎯 Score Resume for Selected Roles
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Enhanced Resume Scoring Options -->
+                <div class="resume-scoring-options" style="margin-top: 2rem;">
+                    <div class="scoring-option-card">
+                        <h3>⚡ Quick Score with Current Skills</h3>
+                        <p>Use your selected skills from the Skill Gap Analyzer for instant ATS scoring</p>
+                        <div id="current-skills-display" class="current-skills-summary">
+                            <p>No skills selected. Please go to Skill Gap Analyzer first.</p>
+                        </div>
+                        <button class="btn-primary" onclick="quickScoreWithSkills()" id="quick-score-btn" disabled>
+                            ⚡ Quick ATS Score
+                        </button>
+                    </div>
+                    
+                    <div class="scoring-option-card">
+                        <h3>🎯 Role-Based Scoring</h3>
+                        <p>See how your resume scores for different job roles using AI analysis</p>
+                        <select class="form-input" id="role-scoring-select" style="margin-bottom: 1rem;">
+                            <option value="">Select roles to score against...</option>
+                        </select>
+                        <button class="btn-primary" onclick="scoreForMultipleRoles()" id="role-score-btn" disabled>
+                            🎯 Score for Selected Roles
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Role-Based Scoring Results -->
+                <div id="role-based-scoring-results" class="results-container">
+                    <!-- Role-based scoring results will be displayed here -->
+                </div>
+            </div>
+
+            <!-- Suggestions Section -->
+            <div id="suggestions-section" class="feature-section">
+                <h2 class="section-title">
+                    <span class="section-icon">💡</span>
+                    Improvement Suggestions
+                </h2>
+                
+                <div id="suggestions-results" class="results-container">
+                    <p style="text-align: center; color: #666; padding: 2rem;">
+                        Complete a skill gap analysis or resume scoring to get personalized suggestions.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Analyzing with AI... Please wait</p>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">👤 Profile Settings</h3>
+                <button class="close-btn" onclick="closeProfile()">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-input" id="profile-name" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-input" id="profile-email" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label>Education Level</label>
+                <select class="form-input" id="profile-education">
+                    <option value="">Select Education Level</option>
+                    <option value="High School">High School</option>
+                    <option value="Bachelor's">Bachelor's Degree</option>
+                    <option value="Master's">Master's Degree</option>
+                    <option value="PhD">PhD</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Degree/Field</label>
+                <input type="text" class="form-input" id="profile-degree" placeholder="e.g., Computer Science">
+            </div>
+            
+            <div class="form-group">
+                <label>Years of Experience</label>
+                <input type="number" class="form-input" id="profile-experience" min="0" max="50" step="0.5">
+            </div>
+            
+            <button class="btn-primary" onclick="updateProfile()">Update Profile</button>
+            
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e1e8ed;">
+                <h4 style="margin-bottom: 1rem; color: #333;">Recent Activity</h4>
+                <div id="activity-history">
+                    <p style="color: #666; text-align: center;">No recent activity</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global Variables
+        const API_BASE = 'http://localhost:8000';
+        let authToken = null;
+        let currentUser = null;
+        let allSkills = [];
+        let selectedSkills = [];
+        let allRoles = [];
+
+        // Sample skills data (will be replaced with API data)
+        const skillsData = {
+            "Programming Languages": ["Python", "Java", "JavaScript", "C#", "C++", "PHP", "Ruby", "Go", "Swift", "Kotlin"],
+            "Web Technologies": ["React", "Angular", "Vue.js", "Node.js", "Express", "Django", "Flask", "ASP.NET", "HTML", "CSS"],
+            "Databases": ["MySQL", "PostgreSQL", "MongoDB", "Redis", "Oracle", "SQL Server", "SQLite", "Cassandra"],
+            "Cloud & DevOps": ["AWS", "Azure", "GCP", "Docker", "Kubernetes", "Jenkins", "Git", "Terraform", "Ansible"],
+            "Machine Learning": ["TensorFlow", "PyTorch", "Scikit-learn", "Pandas", "NumPy", "Keras", "OpenCV"],
+            "Mobile Development": ["React Native", "Flutter", "Android", "iOS", "Xamarin", "Ionic"]
+        };
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSkills();
+            loadRoles();
+            loadRolesScoringSelect();
+        });
+
+        // Load roles for scoring select
+        function loadRolesScoringSelect() {
+            const roles = [
+                'Web Developer', 'Data Scientist', 'DevOps Engineer', 'Full Stack Developer',
+                'Backend Developer', 'Frontend Developer', 'Mobile Developer', 'Software Engineer',
+                'AI Engineer', 'Python Developer', 'Java Developer', 'React Developer'
+            ];
+            
+            const select = document.getElementById('role-scoring-select');
+            select.innerHTML = '<option value="">Select roles to score against...</option>';
+            
+            roles.forEach(role => {
+                const option = document.createElement('option');
+                option.value = role;
+                option.textContent = role;
+                select.appendChild(option);
+            });
+            
+            // Make it multiple select
+            select.multiple = true;
+            select.size = 6;
+        }
+
+        // Score for multiple roles
+        async function scoreForMultipleRoles() {
+            const select = document.getElementById('role-scoring-select');
+            const selectedRoles = Array.from(select.selectedOptions).map(option => option.value);
+            
+            if (selectedRoles.length === 0) {
+                alert('Please select at least one role to score against');
+                return;
+            }
+            
+            if (selectedSkills.length === 0) {
+                alert('Please select your skills first in the Skill Gap Analyzer');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                const experienceYears = parseFloat(document.getElementById('experience-years')?.value) || 2;
+                const roleScores = calculateSpecificRoleScores(selectedSkills, experienceYears, selectedRoles);
+                
+                displayRoleBasedScoringResults(roleScores, selectedSkills);
+                
+            } catch (error) {
+                console.error('Role-based scoring failed:', error);
+                alert('Role-based scoring failed. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Calculate scores for specific roles
+        function calculateSpecificRoleScores(skills, experienceYears, targetRoles) {
+            const roleSkillMap = {
+                'Web Developer': ['JavaScript', 'HTML', 'CSS', 'React', 'Node.js', 'Git'],
+                'Data Scientist': ['Python', 'SQL', 'Pandas', 'NumPy', 'Machine Learning', 'Statistics'],
+                'DevOps Engineer': ['Docker', 'Kubernetes', 'AWS', 'Linux', 'CI/CD', 'Terraform'],
+                'Full Stack Developer': ['JavaScript', 'React', 'Node.js', 'SQL', 'Git', 'REST APIs'],
+                'Backend Developer': ['Python', 'Java', 'SQL', 'REST APIs', 'Database', 'Git'],
+                'Frontend Developer': ['JavaScript', 'React', 'HTML', 'CSS', 'TypeScript', 'Git'],
+                'Mobile Developer': ['React Native', 'Flutter', 'Android', 'iOS', 'Firebase', 'Git'],
+                'Software Engineer': ['Python', 'Java', 'JavaScript', 'Git', 'SQL', 'Algorithms'],
+                'AI Engineer': ['Python', 'TensorFlow', 'PyTorch', 'Machine Learning', 'Deep Learning'],
+                'Python Developer': ['Python', 'Django', 'Flask', 'SQL', 'Git', 'REST APIs'],
+                'Java Developer': ['Java', 'Spring', 'Hibernate', 'SQL', 'Git', 'Maven'],
+                'React Developer': ['JavaScript', 'React', 'HTML', 'CSS', 'Git', 'Redux']
+            };
+            
+            return targetRoles.map(roleName => {
+                const requiredSkills = roleSkillMap[roleName] || [];
+                const matchedSkills = skills.filter(skill => 
+                    requiredSkills.some(reqSkill => 
+                        skill.toLowerCase().includes(reqSkill.toLowerCase()) ||
+                        reqSkill.toLowerCase().includes(skill.toLowerCase())
+                    )
+                );
+                
+                const missingSkills = requiredSkills.filter(reqSkill => 
+                    !skills.some(skill => 
+                        skill.toLowerCase().includes(reqSkill.toLowerCase()) ||
+                        reqSkill.toLowerCase().includes(skill.toLowerCase())
+                    )
+                );
+                
+                const matchPercentage = requiredSkills.length > 0 ? 
+                    Math.round((matchedSkills.length / requiredSkills.length) * 100) : 0;
+                
+                // Experience adjustment
+                let adjustedScore = matchPercentage;
+                if (experienceYears >= 2) adjustedScore += 5;
+                if (experienceYears >= 5) adjustedScore += 10;
+                adjustedScore = Math.min(adjustedScore, 100);
+                
+                let readiness;
+                if (adjustedScore >= 80) readiness = 'ready';
+                else if (adjustedScore >= 60) readiness = 'almost';
+                else readiness = 'needs-prep';
+                
+                return {
+                    role: roleName,
+                    score: adjustedScore,
+                    matchPercentage,
+                    matchedSkills,
+                    missingSkills,
+                    readiness,
+                    requiredSkills
+                };
+            }).sort((a, b) => b.score - a.score);
+        }
+
+        // Display role-based scoring results
+        function displayRoleBasedScoringResults(roleScores, skills) {
+            const container = document.getElementById('role-based-scoring-results');
+            
+            const avgScore = Math.round(roleScores.reduce((sum, role) => sum + role.score, 0) / roleScores.length);
+            const readyRoles = roleScores.filter(role => role.readiness === 'ready').length;
+            
+            container.innerHTML = `
+                <div class="ats-score-card">
+                    <h3 style="margin-bottom: 1rem;">🎯 Role-Based Scoring Analysis</h3>
+                    <div class="ats-score-main">${avgScore}%</div>
+                    <div class="ats-score-category">Average Role Match</div>
+                    <p>Based on ${skills.length} selected skills across ${roleScores.length} target roles</p>
+                    
+                    <div class="ats-score-details">
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${readyRoles}</span>
+                            <span class="ats-detail-label">Ready Roles</span>
+                        </div>
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${roleScores.filter(r => r.readiness === 'almost').length}</span>
+                            <span class="ats-detail-label">Almost Ready</span>
+                        </div>
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${roleScores[0].score}%</span>
+                            <span class="ats-detail-label">Best Match</span>
+                        </div>
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${skills.length}</span>
+                            <span class="ats-detail-label">Your Skills</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-bottom: 1.5rem; color: #333;">📊 Detailed Role Analysis</h3>
+                <div class="role-scoring-grid">
+                    ${roleScores.map(role => `
+                        <div class="role-score-card">
+                            <div class="role-score-header">
+                                <div class="role-score-title">${role.role}</div>
+                                <div class="role-score-percentage">${role.score}%</div>
+                            </div>
+                            <div class="role-score-breakdown">
+                                <span>Skills Match: ${role.matchPercentage}%</span>
+                                <span>Ready: ${role.matchedSkills.length}/${role.requiredSkills.length}</span>
+                            </div>
+                            <div class="role-readiness ${role.readiness}">
+                                ${role.readiness === 'ready' ? '✅ Ready to Apply' : 
+                                  role.readiness === 'almost' ? '🟡 Almost Ready' : '🔴 Needs Preparation'}
+                            </div>
+                            
+                            <div style="margin-top: 1rem;">
+                                <div style="font-size: 0.85rem; margin-bottom: 0.5rem;">
+                                    <strong style="color: #27ae60;">✅ Matched (${role.matchedSkills.length}):</strong>
+                                    <div style="margin-top: 0.3rem;">
+                                        ${role.matchedSkills.slice(0, 4).map(skill => `
+                                            <span style="background: #d4edda; color: #155724; padding: 0.2rem 0.5rem; border-radius: 10px; margin: 0.1rem; display: inline-block; font-size: 0.75rem;">${skill}</span>
+                                        `).join('')}
+                                        ${role.matchedSkills.length > 4 ? `<span style="color: #666; font-size: 0.75rem;">+${role.matchedSkills.length - 4} more</span>` : ''}
+                                    </div>
+                                </div>
+                                
+                                ${role.missingSkills.length > 0 ? `
+                                    <div style="font-size: 0.85rem;">
+                                        <strong style="color: #e74c3c;">❌ Missing (${role.missingSkills.length}):</strong>
+                                        <div style="margin-top: 0.3rem;">
+                                            ${role.missingSkills.slice(0, 4).map(skill => `
+                                                <span style="background: #f8d7da; color: #721c24; padding: 0.2rem 0.5rem; border-radius: 10px; margin: 0.1rem; display: inline-block; font-size: 0.75rem;">${skill}</span>
+                                            `).join('')}
+                                            ${role.missingSkills.length > 4 ? `<span style="color: #666; font-size: 0.75rem;">+${role.missingSkills.length - 4} more</span>` : ''}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="suggestions">
+                    <h3>💡 Role-Based Recommendations</h3>
+                    ${generateRoleBasedRecommendations(roleScores, skills).map(rec => `
+                        <div class="suggestion-item">
+                            <div class="suggestion-icon">💡</div>
+                            <div class="suggestion-text">${rec}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            container.classList.add('active');
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Generate role-based recommendations
+        function generateRoleBasedRecommendations(roleScores, skills) {
+            const recommendations = [];
+            const topRole = roleScores[0];
+            const readyRoles = roleScores.filter(role => role.readiness === 'ready');
+            
+            if (readyRoles.length > 0) {
+                recommendations.push(`🎉 Excellent! You're ready to apply for ${readyRoles.length} role(s): ${readyRoles.map(r => r.role).join(', ')}`);
+                recommendations.push('🚀 Focus your job search on these roles for the best success rate.');
+            } else if (topRole.score >= 60) {
+                recommendations.push(`🎯 You're closest to being ready for ${topRole.role} (${topRole.score}% match).`);
+                recommendations.push(`📚 Focus on learning: ${topRole.missingSkills.slice(0, 3).join(', ')}`);
+            } else {
+                recommendations.push('🔧 You need to build more skills before applying to these roles.');
+                recommendations.push('📖 Consider starting with entry-level positions or internships.');
+            }
+            
+            // Common missing skills across roles
+            const allMissingSkills = roleScores.flatMap(role => role.missingSkills);
+            const skillFrequency = {};
+            allMissingSkills.forEach(skill => {
+                skillFrequency[skill] = (skillFrequency[skill] || 0) + 1;
+            });
+            
+            const commonMissing = Object.entries(skillFrequency)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 3)
+                .map(([skill]) => skill);
+            
+            if (commonMissing.length > 0) {
+                recommendations.push(`🔥 High-impact skills to learn: ${commonMissing.join(', ')} (needed for multiple roles)`);
+            }
+            
+            recommendations.push('💼 Consider building projects that demonstrate these missing skills.');
+            recommendations.push('🎓 Look for online courses or certifications in your target skill areas.');
+            
+            return recommendations;
+        }
+
+        // Authentication Functions
+        async function signup() {
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            if (!name || !email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.access_token;
+                    currentUser = { name, email };
+                    showDashboard();
+                } else {
+                    alert(data.detail || 'Signup failed');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert('Signup failed. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.access_token;
+                    currentUser = data.user;
+                    showDashboard();
+                } else {
+                    alert(data.detail || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // UI Navigation Functions
+        function showAuth(type) {
+            document.getElementById('landing-page').classList.add('hidden');
+            document.getElementById('auth-container').classList.remove('hidden');
+            
+            if (type === 'login') {
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('signup-form').classList.add('hidden');
+            } else {
+                document.getElementById('signup-form').classList.remove('hidden');
+                document.getElementById('login-form').classList.add('hidden');
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('landing-page').classList.add('hidden');
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('dashboard').classList.add('active');
+            
+            if (currentUser) {
+                document.getElementById('user-name').textContent = currentUser.name;
+            }
+        }
+
+        function showSection(sectionName) {
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Show section
+            document.querySelectorAll('.feature-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            document.getElementById(`${sectionName}-section`).classList.add('active');
+        }
+
+        function showProfile() {
+            document.getElementById('profile-modal').classList.add('active');
+            
+            if (currentUser) {
+                document.getElementById('profile-name').value = currentUser.name || '';
+                document.getElementById('profile-email').value = currentUser.email || '';
+            }
+        }
+
+        function closeProfile() {
+            document.getElementById('profile-modal').classList.remove('active');
+        }
+
+        function showLoading(show) {
+            if (show) {
+                document.getElementById('loading').classList.add('active');
+            } else {
+                document.getElementById('loading').classList.remove('active');
+            }
+        }
+
+        // Skills Management
+        function loadSkills() {
+            const container = document.getElementById('skill-categories');
+            container.innerHTML = '';
+
+            Object.entries(skillsData).forEach(([category, skills]) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'skill-category';
+                categoryDiv.innerHTML = `
+                    <div class="category-title">${category}</div>
+                    <div class="skill-tags">
+                        ${skills.map(skill => `
+                            <span class="skill-tag" onclick="toggleSkill('${skill}')">${skill}</span>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(categoryDiv);
+            });
+        }
+
+        function toggleSkill(skill) {
+            const skillTag = event.target;
+            
+            if (selectedSkills.includes(skill)) {
+                selectedSkills = selectedSkills.filter(s => s !== skill);
+                skillTag.classList.remove('selected');
+            } else {
+                selectedSkills.push(skill);
+                skillTag.classList.add('selected');
+            }
+            
+            updateSelectedSkillsDisplay();
+        }
+
+        function updateSelectedSkillsDisplay() {
+            document.getElementById('selected-count').textContent = selectedSkills.length;
+            
+            const display = document.getElementById('selected-skills-display');
+            display.innerHTML = selectedSkills.map(skill => `
+                <span class="skill-item matched" onclick="toggleSkill('${skill}')">${skill} ×</span>
+            `).join('');
+            
+            // Update resume scoring display
+            updateCurrentSkillsDisplay();
+        }
+
+        function filterSkills() {
+            const searchTerm = document.getElementById('skill-search').value.toLowerCase();
+            const skillTags = document.querySelectorAll('.skill-tag');
+            
+            skillTags.forEach(tag => {
+                const skillName = tag.textContent.toLowerCase();
+                if (skillName.includes(searchTerm)) {
+                    tag.style.display = 'inline-block';
+                } else {
+                    tag.style.display = 'none';
+                }
+            });
+        }
+
+        // Load Roles - Load ALL jobs from dataset
+        async function loadRoles() {
+            try {
+                // For demo, using comprehensive job data based on the dataset structure
+                const allJobs = generateAllJobsFromDataset();
+                
+                const select = document.getElementById('target-role');
+                select.innerHTML = '';
+                
+                allJobs.forEach((job, index) => {
+                    const option = document.createElement('option');
+                    option.value = JSON.stringify(job);
+                    option.textContent = `${job.title} - ${job.experienceLevel} (${job.yearsOfExperience} years)`;
+                    select.appendChild(option);
+                });
+                
+                console.log(`Loaded ${allJobs.length} jobs from dataset`);
+            } catch (error) {
+                console.error('Failed to load roles:', error);
+            }
+        }
+
+        // Generate comprehensive job data based on dataset structure
+        function generateAllJobsFromDataset() {
+            const jobs = [];
+            const roles = [
+                ".NET Developer", "Web Developer", "Data Scientist", "DevOps Engineer",
+                "Mobile Developer", "Full Stack Developer", "Backend Developer",
+                "Frontend Developer", "Software Engineer", "AI Engineer", "Python Developer",
+                "Java Developer", "React Developer", "Angular Developer", "Node.js Developer",
+                "Database Administrator", "Cloud Engineer", "Machine Learning Engineer",
+                "UI/UX Designer", "Product Manager", "QA Engineer", "Cybersecurity Analyst"
+            ];
+            
+            const experienceLevels = ["Fresher", "Junior", "Mid-level", "Senior"];
+            const yearsMapping = {
+                "Fresher": "0-1",
+                "Junior": "1-3", 
+                "Mid-level": "3-5",
+                "Senior": "5+"
+            };
+            
+            const skillSets = {
+                ".NET Developer": ["C#", "ASP.NET", "SQL Server", "Entity Framework", "MVC", "LINQ", "Visual Studio", "Git"],
+                "Web Developer": ["JavaScript", "HTML", "CSS", "React", "Node.js", "Git", "REST APIs", "MongoDB"],
+                "Data Scientist": ["Python", "SQL", "Pandas", "NumPy", "Scikit-learn", "TensorFlow", "Statistics", "Jupyter"],
+                "DevOps Engineer": ["Docker", "Kubernetes", "AWS", "Jenkins", "Git", "Linux", "Terraform", "CI/CD"],
+                "Mobile Developer": ["React Native", "Flutter", "Android", "iOS", "Firebase", "Git", "Mobile UI/UX"],
+                "Full Stack Developer": ["JavaScript", "React", "Node.js", "Python", "SQL", "Git", "AWS", "MongoDB"],
+                "Backend Developer": ["Python", "Java", "SQL", "REST APIs", "Docker", "Git", "Database Design"],
+                "Frontend Developer": ["JavaScript", "React", "HTML", "CSS", "TypeScript", "Git", "Responsive Design"],
+                "Software Engineer": ["Python", "Java", "JavaScript", "Git", "SQL", "Algorithms", "Data Structures"],
+                "AI Engineer": ["Python", "TensorFlow", "PyTorch", "Machine Learning", "Deep Learning", "NumPy", "Pandas"],
+                "Python Developer": ["Python", "Django", "Flask", "SQL", "Git", "REST APIs", "PostgreSQL"],
+                "Java Developer": ["Java", "Spring", "Hibernate", "SQL", "Git", "Maven", "JUnit"],
+                "React Developer": ["JavaScript", "React", "HTML", "CSS", "Git", "Node.js", "Redux"],
+                "Angular Developer": ["JavaScript", "Angular", "TypeScript", "HTML", "CSS", "Git", "RxJS"],
+                "Node.js Developer": ["JavaScript", "Node.js", "Express", "MongoDB", "Git", "REST APIs", "NPM"],
+                "Database Administrator": ["SQL", "MySQL", "PostgreSQL", "Oracle", "Database Design", "Performance Tuning"],
+                "Cloud Engineer": ["AWS", "Azure", "Docker", "Kubernetes", "Terraform", "Linux", "Networking"],
+                "Machine Learning Engineer": ["Python", "TensorFlow", "Scikit-learn", "Pandas", "NumPy", "Statistics", "Git"],
+                "UI/UX Designer": ["Figma", "Adobe XD", "Photoshop", "User Research", "Prototyping", "Wireframing"],
+                "Product Manager": ["Product Strategy", "Analytics", "User Research", "Agile", "Roadmapping", "Stakeholder Management"],
+                "QA Engineer": ["Testing", "Selenium", "Test Automation", "Bug Tracking", "Test Planning", "Quality Assurance"],
+                "Cybersecurity Analyst": ["Network Security", "Penetration Testing", "Risk Assessment", "Incident Response", "Compliance"]
+            };
+            
+            roles.forEach(role => {
+                experienceLevels.forEach(level => {
+                    // Create 2-3 variations per role-level combination
+                    for (let i = 1; i <= 2; i++) {
+                        jobs.push({
+                            id: `${role.replace(/\s+/g, '-').toLowerCase()}-${level.toLowerCase()}-${i}`,
+                            title: role,
+                            experienceLevel: level,
+                            yearsOfExperience: yearsMapping[level],
+                            skills: skillSets[role] || ["Programming", "Problem Solving", "Communication"],
+                            keywords: skillSets[role] || [],
+                            responsibilities: [
+                                `Develop and maintain ${role.toLowerCase()} applications`,
+                                `Collaborate with cross-functional teams`,
+                                `Follow best practices and coding standards`,
+                                `Participate in code reviews and testing`
+                            ]
+                        });
+                    }
+                });
+            });
+            
+            return jobs;
+        }
+
+        // New function: Analyze all jobs for user skills
+        async function analyzeAllJobs() {
+            if (selectedSkills.length === 0) {
+                alert('Please select at least one skill first');
+                return;
+            }
+            
+            const experienceLevel = document.getElementById('experience-level').value;
+            const experienceYears = parseFloat(document.getElementById('experience-years').value) || 0;
+            
+            if (!experienceLevel) {
+                alert('Please select your experience level');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                // Simulate API processing time
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Get all jobs and analyze them
+                const allJobs = generateAllJobsFromDataset();
+                const suitableJobs = findSuitableJobs(selectedSkills, experienceLevel, experienceYears, allJobs);
+                
+                displayAutoAnalysisResults(suitableJobs, selectedSkills, experienceLevel);
+                
+                // Show manual role selection option
+                document.getElementById('manual-role-selection').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Analysis failed:', error);
+                alert('Analysis failed. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Find suitable jobs based on skills and experience
+        function findSuitableJobs(userSkills, userExperienceLevel, userExperienceYears, allJobs) {
+            const suitableJobs = [];
+            
+            // Experience level hierarchy
+            const experienceHierarchy = {
+                "Fresher": 0,
+                "Junior": 1,
+                "Mid-level": 2,
+                "Senior": 3
+            };
+            
+            const userExpLevel = experienceHierarchy[userExperienceLevel];
+            
+            allJobs.forEach(job => {
+                const jobExpLevel = experienceHierarchy[job.experienceLevel];
+                
+                // Check if user meets experience requirement (can apply for same level or lower)
+                if (userExpLevel >= jobExpLevel) {
+                    // Calculate skill match
+                    const jobSkills = job.skills || [];
+                    const matchedSkills = userSkills.filter(skill => 
+                        jobSkills.some(jobSkill => 
+                            jobSkill.toLowerCase().includes(skill.toLowerCase()) ||
+                            skill.toLowerCase().includes(jobSkill.toLowerCase())
+                        )
+                    );
+                    
+                    const matchPercentage = jobSkills.length > 0 ? 
+                        Math.round((matchedSkills.length / jobSkills.length) * 100) : 0;
+                    
+                    // Only include jobs with at least 30% match
+                    if (matchPercentage >= 30) {
+                        const missingSkills = jobSkills.filter(jobSkill => 
+                            !userSkills.some(userSkill => 
+                                userSkill.toLowerCase().includes(jobSkill.toLowerCase()) ||
+                                jobSkill.toLowerCase().includes(userSkill.toLowerCase())
+                            )
+                        );
+                        
+                        suitableJobs.push({
+                            ...job,
+                            matchPercentage,
+                            matchedSkills,
+                            missingSkills,
+                            matchCategory: getMatchCategory(matchPercentage)
+                        });
+                    }
+                }
+            });
+            
+            // Sort by match percentage (highest first)
+            return suitableJobs.sort((a, b) => b.matchPercentage - a.matchPercentage);
+        }
+
+        function getMatchCategory(percentage) {
+            if (percentage >= 80) return 'excellent';
+            if (percentage >= 60) return 'good';
+            if (percentage >= 40) return 'average';
+            return 'poor';
+        }
+
+        // Display auto analysis results
+        function displayAutoAnalysisResults(suitableJobs, userSkills, experienceLevel) {
+            const container = document.getElementById('auto-analysis-results');
+            
+            if (suitableJobs.length === 0) {
+                container.innerHTML = `
+                    <div class="no-jobs-found">
+                        <div class="no-jobs-icon">😔</div>
+                        <h3 class="no-jobs-title">No Suitable Jobs Found</h3>
+                        <p class="no-jobs-message">
+                            Based on your current skills (${userSkills.join(', ')}) and experience level (${experienceLevel}), 
+                            we couldn't find jobs with at least 30% skill match.<br><br>
+                            <strong>Suggestions:</strong><br>
+                            • Add more relevant skills to your profile<br>
+                            • Consider entry-level positions to gain experience<br>
+                            • Focus on learning high-demand skills in your field
+                        </p>
+                        <button class="btn-primary" onclick="document.getElementById('manual-role-selection').style.display='block'; document.getElementById('manual-role-selection').scrollIntoView({behavior: 'smooth'});">
+                            🎯 Browse All Available Roles
+                        </button>
+                    </div>
+                `;
+            } else {
+                const excellentJobs = suitableJobs.filter(job => job.matchCategory === 'excellent');
+                const goodJobs = suitableJobs.filter(job => job.matchCategory === 'good');
+                const averageJobs = suitableJobs.filter(job => job.matchCategory === 'average');
+                
+                container.innerHTML = `
+                    <div class="analysis-summary">
+                        <h3>🎉 Great! We found ${suitableJobs.length} suitable jobs for you!</h3>
+                        <p>Based on your skills: ${userSkills.join(', ')}</p>
+                        <div class="summary-stats">
+                            <div class="summary-stat">
+                                <span class="summary-stat-number">${excellentJobs.length}</span>
+                                <span class="summary-stat-label">Excellent Matches (80%+)</span>
+                            </div>
+                            <div class="summary-stat">
+                                <span class="summary-stat-number">${goodJobs.length}</span>
+                                <span class="summary-stat-label">Good Matches (60-79%)</span>
+                            </div>
+                            <div class="summary-stat">
+                                <span class="summary-stat-number">${averageJobs.length}</span>
+                                <span class="summary-stat-label">Average Matches (40-59%)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="job-cards">
+                        ${suitableJobs.slice(0, 12).map(job => `
+                            <div class="job-card ${job.matchCategory}">
+                                <div class="job-title">${job.title}</div>
+                                <div class="job-meta">
+                                    <span class="job-experience">${job.experienceLevel} (${job.yearsOfExperience} years)</span>
+                                    <span class="job-match-score ${job.matchCategory}">${job.matchPercentage}% Match</span>
+                                </div>
+                                
+                                <div class="job-skills">
+                                    <h5>✅ Your Matching Skills (${job.matchedSkills.length}):</h5>
+                                    <div class="job-skill-tags">
+                                        ${job.matchedSkills.map(skill => `
+                                            <span class="job-skill-tag matched">${skill}</span>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                
+                                ${job.missingSkills.length > 0 ? `
+                                    <div class="job-skills">
+                                        <h5>📚 Skills to Learn (${job.missingSkills.length}):</h5>
+                                        <div class="job-skill-tags">
+                                            ${job.missingSkills.slice(0, 6).map(skill => `
+                                                <span class="job-skill-tag missing">${skill}</span>
+                                            `).join('')}
+                                            ${job.missingSkills.length > 6 ? `<span class="job-skill-tag missing">+${job.missingSkills.length - 6} more</span>` : ''}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    ${suitableJobs.length > 12 ? `
+                        <div style="text-align: center; margin-top: 2rem;">
+                            <p style="color: #666;">Showing top 12 matches out of ${suitableJobs.length} suitable jobs</p>
+                            <button class="btn-primary" onclick="showAllJobs()" style="margin-top: 1rem;">
+                                📋 View All ${suitableJobs.length} Suitable Jobs
+                            </button>
+                        </div>
+                    ` : ''}
+                `;
+            }
+            
+            container.classList.add('active');
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Filter roles in the dropdown
+        function filterRoles() {
+            const searchTerm = document.getElementById('role-search').value.toLowerCase();
+            const options = document.querySelectorAll('#target-role option');
+            
+            options.forEach(option => {
+                const text = option.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+        }
+
+        // Analyze specific selected roles
+        async function analyzeSpecificRoles() {
+            const select = document.getElementById('target-role');
+            const selectedOptions = Array.from(select.selectedOptions);
+            
+            if (selectedOptions.length === 0) {
+                alert('Please select at least one role to analyze');
+                return;
+            }
+            
+            if (selectedSkills.length === 0) {
+                alert('Please select your skills first');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                const analysisResults = [];
+                
+                selectedOptions.forEach(option => {
+                    const job = JSON.parse(option.value);
+                    const result = analyzeJobMatch(selectedSkills, job);
+                    analysisResults.push(result);
+                });
+                
+                displaySpecificRoleResults(analysisResults);
+                
+            } catch (error) {
+                console.error('Analysis failed:', error);
+                alert('Analysis failed. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Analyze match for a specific job
+        function analyzeJobMatch(userSkills, job) {
+            const jobSkills = job.skills || [];
+            const matchedSkills = userSkills.filter(skill => 
+                jobSkills.some(jobSkill => 
+                    jobSkill.toLowerCase().includes(skill.toLowerCase()) ||
+                    skill.toLowerCase().includes(jobSkill.toLowerCase())
+                )
+            );
+            
+            const missingSkills = jobSkills.filter(jobSkill => 
+                !userSkills.some(userSkill => 
+                    userSkill.toLowerCase().includes(jobSkill.toLowerCase()) ||
+                    jobSkill.toLowerCase().includes(userSkill.toLowerCase())
+                )
+            );
+            
+            const matchPercentage = jobSkills.length > 0 ? 
+                Math.round((matchedSkills.length / jobSkills.length) * 100) : 0;
+            
+            return {
+                ...job,
+                matchPercentage,
+                matchedSkills,
+                missingSkills,
+                matchCategory: getMatchCategory(matchPercentage),
+                suggestions: generateJobSpecificSuggestions(matchPercentage, missingSkills, job)
+            };
+        }
+
+        function generateJobSpecificSuggestions(matchPercentage, missingSkills, job) {
+            const suggestions = [];
+            
+            if (matchPercentage >= 80) {
+                suggestions.push(`🎉 Excellent match for ${job.title}! You're ready to apply.`);
+                suggestions.push("💼 Highlight your matching skills prominently in your resume.");
+                suggestions.push("🚀 Consider applying immediately - you meet most requirements.");
+            } else if (matchPercentage >= 60) {
+                suggestions.push(`👍 Good match for ${job.title}! Focus on learning missing skills.`);
+                suggestions.push("📚 Consider taking online courses for the missing skills.");
+                suggestions.push("💡 Apply while mentioning your willingness to learn.");
+            } else if (matchPercentage >= 40) {
+                suggestions.push(`📖 Moderate match. Invest time in learning key skills before applying.`);
+                suggestions.push("🎯 Focus on the most important missing skills first.");
+                suggestions.push("⏰ Set a 3-6 month learning timeline for this role.");
+            } else {
+                suggestions.push(`🚀 Significant skill gap. Consider this as a long-term goal.`);
+                suggestions.push("📈 Start with similar roles that better match your current skills.");
+                suggestions.push("🎓 Consider formal training or certification programs.");
+            }
+            
+            if (missingSkills.length > 0) {
+                const prioritySkills = missingSkills.slice(0, 3);
+                suggestions.push(`🔥 Priority skills to learn: ${prioritySkills.join(', ')}`);
+            }
+            
+            return suggestions;
+        }
+
+        // Display specific role analysis results
+        function displaySpecificRoleResults(results) {
+            const container = document.getElementById('skill-gap-results');
+            
+            container.innerHTML = `
+                <h3 style="margin-bottom: 2rem; color: #333;">📊 Detailed Role Analysis Results</h3>
+                
+                ${results.map(result => `
+                    <div class="job-card ${result.matchCategory}" style="margin-bottom: 2rem;">
+                        <div class="job-title">${result.title}</div>
+                        <div class="job-meta">
+                            <span class="job-experience">${result.experienceLevel} (${result.yearsOfExperience} years)</span>
+                            <span class="job-match-score ${result.matchCategory}">${result.matchPercentage}% Match</span>
+                        </div>
+                        
+                        <div class="skills-comparison" style="margin: 1.5rem 0;">
+                            <div class="skills-column">
+                                <h4>✅ Matched Skills (${result.matchedSkills.length})</h4>
+                                ${result.matchedSkills.map(skill => `
+                                    <span class="skill-item matched">${skill}</span>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="skills-column missing">
+                                <h4>❌ Missing Skills (${result.missingSkills.length})</h4>
+                                ${result.missingSkills.map(skill => `
+                                    <span class="skill-item missing">${skill}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="suggestions">
+                            <h4>💡 Personalized Suggestions for ${result.title}</h4>
+                            ${result.suggestions.map(suggestion => `
+                                <div class="suggestion-item">
+                                    <div class="suggestion-icon">💡</div>
+                                    <div class="suggestion-text">${suggestion}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+            
+            container.classList.add('active');
+            container.scrollIntoView({ behavior: 'smooth' });
+            
+            // Update suggestions section
+            document.getElementById('suggestions-results').innerHTML = container.innerHTML;
+            document.getElementById('suggestions-results').classList.add('active');
+        }
+
+        // Legacy Skill Gap Analysis (kept for compatibility)
+        async function analyzeSkillGap() {
+            // This function is now replaced by analyzeAllJobs and analyzeSpecificRoles
+            // Redirect to the new workflow
+            if (selectedSkills.length === 0) {
+                alert('Please select your skills first, then use "Find Suitable Jobs" button');
+                return;
+            }
+            
+            alert('Please use the new "Find Suitable Jobs for My Skills" button for better analysis!');
+        }
+
+        // Show all jobs function
+        function showAllJobs() {
+            // This would expand the job cards to show all results
+            // For now, just scroll to manual selection
+            document.getElementById('manual-role-selection').style.display = 'block';
+            document.getElementById('manual-role-selection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateMockSkillGapResults(userSkills, targetRole) {
+            // Mock required skills based on role
+            const roleSkills = {
+                ".NET Developer": ["C#", "ASP.NET", "SQL Server", "Entity Framework", "MVC", "LINQ", "Visual Studio", "Git"],
+                "Web Developer": ["JavaScript", "HTML", "CSS", "React", "Node.js", "Git", "REST APIs", "MongoDB"],
+                "Data Scientist": ["Python", "SQL", "Pandas", "NumPy", "Scikit-learn", "TensorFlow", "Statistics", "Jupyter"],
+                "DevOps Engineer": ["Docker", "Kubernetes", "AWS", "Jenkins", "Git", "Linux", "Terraform", "CI/CD"],
+                "Mobile Developer": ["React Native", "Flutter", "Android", "iOS", "Firebase", "Git", "Mobile UI/UX"]
+            };
+
+            const requiredSkills = roleSkills[targetRole] || ["JavaScript", "HTML", "CSS", "Git"];
+            const matchedSkills = userSkills.filter(skill => requiredSkills.includes(skill));
+            const missingSkills = requiredSkills.filter(skill => !userSkills.includes(skill));
+            
+            const matchPercentage = Math.round((matchedSkills.length / requiredSkills.length) * 100);
+            
+            return {
+                targetRole,
+                matchPercentage,
+                matchedSkills,
+                missingSkills,
+                requiredSkills,
+                suggestions: generateSuggestions(matchPercentage, missingSkills)
+            };
+        }
+
+        function generateSuggestions(matchPercentage, missingSkills) {
+            const suggestions = [];
+            
+            if (matchPercentage >= 80) {
+                suggestions.push("🎉 Excellent match! You're ready to apply for this role.");
+                suggestions.push("💼 Consider highlighting your matching skills prominently in your resume.");
+            } else if (matchPercentage >= 60) {
+                suggestions.push("👍 Good match! Focus on learning the missing skills to strengthen your profile.");
+                suggestions.push("📚 Consider taking online courses for the missing skills.");
+            } else if (matchPercentage >= 40) {
+                suggestions.push("📖 Moderate match. Invest time in learning key missing skills before applying.");
+                suggestions.push("🎯 Focus on the most important missing skills first.");
+            } else {
+                suggestions.push("🚀 Significant skill gap. Consider this role as a long-term goal.");
+                suggestions.push("📈 Start with roles that better match your current skills.");
+            }
+            
+            if (missingSkills.length > 0) {
+                suggestions.push(`🔥 Priority skills to learn: ${missingSkills.slice(0, 3).join(', ')}`);
+            }
+            
+            return suggestions;
+        }
+
+        function displaySkillGapResults(results) {
+            const container = document.getElementById('skill-gap-results');
+            const scoreClass = results.matchPercentage >= 80 ? 'excellent' : 
+                              results.matchPercentage >= 60 ? 'good' : 
+                              results.matchPercentage >= 40 ? 'average' : 'poor';
+            
+            container.innerHTML = `
+                <div class="score-display">
+                    <div class="score-circle score-${scoreClass}">
+                        ${results.matchPercentage}%
+                    </div>
+                    <div class="score-info">
+                        <div class="score-label">Match Score for ${results.targetRole}</div>
+                        <div class="score-description">
+                            ${results.matchedSkills.length} of ${results.requiredSkills.length} skills matched
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skills-comparison">
+                    <div class="skills-column">
+                        <h4>✅ Matched Skills (${results.matchedSkills.length})</h4>
+                        ${results.matchedSkills.map(skill => `
+                            <span class="skill-item matched">${skill}</span>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="skills-column missing">
+                        <h4>❌ Missing Skills (${results.missingSkills.length})</h4>
+                        ${results.missingSkills.map(skill => `
+                            <span class="skill-item missing">${skill}</span>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="suggestions">
+                    <h3>💡 Personalized Suggestions</h3>
+                    ${results.suggestions.map(suggestion => `
+                        <div class="suggestion-item">
+                            <div class="suggestion-icon">💡</div>
+                            <div class="suggestion-text">${suggestion}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            container.classList.add('active');
+            
+            // Update suggestions section
+            document.getElementById('suggestions-results').innerHTML = container.innerHTML;
+            document.getElementById('suggestions-results').classList.add('active');
+        }
+
+        // Enhanced Resume Scoring Functions
+        
+        // Update current skills display when skills are selected
+        function updateCurrentSkillsDisplay() {
+            const display = document.getElementById('current-skills-display');
+            const quickScoreBtn = document.getElementById('quick-score-btn');
+            const roleScoreBtn = document.getElementById('role-score-btn');
+            
+            if (selectedSkills.length > 0) {
+                display.innerHTML = `
+                    <p><strong>Selected Skills (${selectedSkills.length}):</strong></p>
+                    <div class="current-skills-tags">
+                        ${selectedSkills.map(skill => `
+                            <span class="current-skill-tag">${skill}</span>
+                        `).join('')}
+                    </div>
+                `;
+                display.classList.add('has-skills');
+                quickScoreBtn.disabled = false;
+                roleScoreBtn.disabled = false;
+            } else {
+                display.innerHTML = '<p>No skills selected. Please go to Skill Gap Analyzer first.</p>';
+                display.classList.remove('has-skills');
+                quickScoreBtn.disabled = true;
+                roleScoreBtn.disabled = true;
+            }
+        }
+
+        // Quick ATS Score with current skills
+        async function quickScoreWithSkills() {
+            if (selectedSkills.length === 0) {
+                alert('Please select skills in the Skill Gap Analyzer first');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                const experienceYears = parseFloat(document.getElementById('experience-years')?.value) || 2;
+                const experienceLevel = document.getElementById('experience-level')?.value || 'Junior';
+                
+                // Generate ATS score based on skills
+                const atsScore = calculateATSScore(selectedSkills, experienceYears, experienceLevel);
+                const roleScores = calculateRoleBasedScores(selectedSkills, experienceYears);
+                
+                displayATSScoreResults(atsScore, roleScores, selectedSkills);
+                
+            } catch (error) {
+                console.error('Quick scoring failed:', error);
+                alert('Quick scoring failed. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Calculate ATS Score based on skills and experience
+        function calculateATSScore(skills, experienceYears, experienceLevel) {
+            // Base score calculation
+            let baseScore = 40; // Minimum base score
+            
+            // Skill-based scoring
+            const skillScore = Math.min(skills.length * 3, 30); // Max 30 points for skills
+            
+            // Experience-based scoring
+            const expScore = Math.min(experienceYears * 5, 20); // Max 20 points for experience
+            
+            // High-value skills bonus
+            const highValueSkills = ['Python', 'JavaScript', 'React', 'AWS', 'Docker', 'Kubernetes', 'Machine Learning', 'SQL'];
+            const highValueCount = skills.filter(skill => 
+                highValueSkills.some(hvSkill => skill.toLowerCase().includes(hvSkill.toLowerCase()))
+            ).length;
+            const highValueBonus = Math.min(highValueCount * 2, 10); // Max 10 points bonus
+            
+            const totalScore = Math.min(baseScore + skillScore + expScore + highValueBonus, 100);
+            
+            let category, recommendation;
+            if (totalScore >= 85) {
+                category = 'Excellent';
+                recommendation = 'Outstanding profile - Ready for senior positions';
+            } else if (totalScore >= 70) {
+                category = 'Good';
+                recommendation = 'Strong profile - Good chances with most applications';
+            } else if (totalScore >= 55) {
+                category = 'Average';
+                recommendation = 'Decent profile - Focus on key skill improvements';
+            } else {
+                category = 'Below Average';
+                recommendation = 'Needs improvement - Build more relevant skills';
+            }
+            
+            return {
+                score: Math.round(totalScore),
+                category,
+                recommendation,
+                breakdown: {
+                    baseScore,
+                    skillScore,
+                    expScore,
+                    highValueBonus,
+                    totalSkills: skills.length,
+                    highValueSkills: highValueCount
+                }
+            };
+        }
+
+        // Calculate role-based scores
+        function calculateRoleBasedScores(skills, experienceYears) {
+            const roles = [
+                { name: 'Web Developer', requiredSkills: ['JavaScript', 'HTML', 'CSS', 'React', 'Node.js'] },
+                { name: 'Data Scientist', requiredSkills: ['Python', 'SQL', 'Pandas', 'Machine Learning', 'Statistics'] },
+                { name: 'DevOps Engineer', requiredSkills: ['Docker', 'Kubernetes', 'AWS', 'Linux', 'CI/CD'] },
+                { name: 'Full Stack Developer', requiredSkills: ['JavaScript', 'React', 'Node.js', 'SQL', 'Git'] },
+                { name: 'Backend Developer', requiredSkills: ['Python', 'Java', 'SQL', 'REST APIs', 'Database'] }
+            ];
+            
+            return roles.map(role => {
+                const matchedSkills = skills.filter(skill => 
+                    role.requiredSkills.some(reqSkill => 
+                        skill.toLowerCase().includes(reqSkill.toLowerCase()) ||
+                        reqSkill.toLowerCase().includes(skill.toLowerCase())
+                    )
+                );
+                
+                const matchPercentage = role.requiredSkills.length > 0 ? 
+                    Math.round((matchedSkills.length / role.requiredSkills.length) * 100) : 0;
+                
+                // Adjust score based on experience
+                let adjustedScore = matchPercentage;
+                if (experienceYears >= 3) adjustedScore += 5; // Experience bonus
+                if (experienceYears >= 5) adjustedScore += 5; // Senior experience bonus
+                adjustedScore = Math.min(adjustedScore, 100);
+                
+                let readiness;
+                if (adjustedScore >= 80) readiness = 'ready';
+                else if (adjustedScore >= 60) readiness = 'almost';
+                else readiness = 'needs-prep';
+                
+                return {
+                    role: role.name,
+                    score: adjustedScore,
+                    matchPercentage,
+                    matchedSkills,
+                    missingSkills: role.requiredSkills.filter(reqSkill => 
+                        !skills.some(skill => 
+                            skill.toLowerCase().includes(reqSkill.toLowerCase()) ||
+                            reqSkill.toLowerCase().includes(skill.toLowerCase())
+                        )
+                    ),
+                    readiness
+                };
+            }).sort((a, b) => b.score - a.score);
+        }
+
+        // Display ATS Score Results
+        function displayATSScoreResults(atsScore, roleScores, skills) {
+            const container = document.getElementById('resume-scoring-results');
+            
+            container.innerHTML = `
+                <div class="ats-score-card">
+                    <div class="ats-score-main">${atsScore.score}%</div>
+                    <div class="ats-score-category">${atsScore.category}</div>
+                    <p>${atsScore.recommendation}</p>
+                    
+                    <div class="ats-score-details">
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${atsScore.breakdown.totalSkills}</span>
+                            <span class="ats-detail-label">Total Skills</span>
+                        </div>
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${atsScore.breakdown.highValueSkills}</span>
+                            <span class="ats-detail-label">High-Value Skills</span>
+                        </div>
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${atsScore.breakdown.skillScore}</span>
+                            <span class="ats-detail-label">Skill Points</span>
+                        </div>
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${atsScore.breakdown.expScore}</span>
+                            <span class="ats-detail-label">Experience Points</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-bottom: 1.5rem; color: #333;">🎯 Role-Based Scoring</h3>
+                <div class="role-scoring-grid">
+                    ${roleScores.map(role => `
+                        <div class="role-score-card">
+                            <div class="role-score-header">
+                                <div class="role-score-title">${role.role}</div>
+                                <div class="role-score-percentage">${role.score}%</div>
+                            </div>
+                            <div class="role-score-breakdown">
+                                <span>Match: ${role.matchPercentage}%</span>
+                                <span>Matched: ${role.matchedSkills.length}/${role.matchedSkills.length + role.missingSkills.length}</span>
+                            </div>
+                            <div class="role-readiness ${role.readiness}">
+                                ${role.readiness === 'ready' ? '✅ Ready to Apply' : 
+                                  role.readiness === 'almost' ? '🟡 Almost Ready' : '🔴 Needs Preparation'}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="suggestions">
+                    <h3>💡 Personalized Recommendations</h3>
+                    ${generateATSRecommendations(atsScore, roleScores, skills).map(rec => `
+                        <div class="suggestion-item">
+                            <div class="suggestion-icon">💡</div>
+                            <div class="suggestion-text">${rec}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            container.classList.add('active');
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Generate ATS recommendations
+        function generateATSRecommendations(atsScore, roleScores, skills) {
+            const recommendations = [];
+            
+            if (atsScore.score >= 85) {
+                recommendations.push('🎉 Excellent ATS score! Your profile stands out to recruiters.');
+                recommendations.push('🚀 Consider applying for senior positions in your field.');
+            } else if (atsScore.score >= 70) {
+                recommendations.push('👍 Good ATS score! You have a competitive profile.');
+                recommendations.push('📈 Focus on the missing skills in your target roles to reach excellence.');
+            } else if (atsScore.score >= 55) {
+                recommendations.push('📚 Average ATS score. Focus on building key technical skills.');
+                recommendations.push('🎯 Target roles where you have 60%+ match for better success.');
+            } else {
+                recommendations.push('🔧 Below average ATS score. Significant skill building needed.');
+                recommendations.push('📖 Start with entry-level positions and build experience.');
+            }
+            
+            // Role-specific recommendations
+            const topRole = roleScores[0];
+            if (topRole.score >= 80) {
+                recommendations.push(`🎯 You're well-suited for ${topRole.role} positions!`);
+            } else if (topRole.score >= 60) {
+                recommendations.push(`📝 Consider focusing on ${topRole.role} - you're close to being ready.`);
+                if (topRole.missingSkills.length > 0) {
+                    recommendations.push(`🔥 Priority skills to learn: ${topRole.missingSkills.slice(0, 3).join(', ')}`);
+                }
+            }
+            
+            // High-value skills recommendation
+            if (atsScore.breakdown.highValueSkills < 3) {
+                recommendations.push('⭐ Add more high-value skills like Python, AWS, React, or Machine Learning.');
+            }
+            
+            return recommendations;
+        }
+
+        // Enhanced Resume Upload and Analysis (following same workflow as skill gap analyzer)
+        async function uploadAndAnalyzeResume() {
+            const fileInput = document.getElementById('resume-file');
+            
+            if (!fileInput.files[0]) {
+                alert('Please select a resume file');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                // Simulate resume parsing and analysis
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                // Mock extracted skills and experience from resume
+                const extractedSkills = [
+                    'Python', 'JavaScript', 'React', 'SQL', 'Git', 'AWS', 'Docker',
+                    'Node.js', 'MongoDB', 'REST APIs', 'HTML', 'CSS', 'Linux'
+                ];
+                
+                const extractedExperience = {
+                    level: 'Mid-level',
+                    years: 3
+                };
+                
+                // Find suitable jobs based on extracted skills
+                const allJobs = generateAllJobsFromDataset();
+                const suitableJobs = findSuitableJobs(extractedSkills, extractedExperience.level, extractedExperience.years, allJobs);
+                
+                displayResumeAnalysisResults(suitableJobs, extractedSkills, extractedExperience, fileInput.files[0].name);
+                
+                // Show manual role selection option
+                document.getElementById('resume-manual-role-selection').style.display = 'block';
+                loadResumeRolesSelect();
+                
+            } catch (error) {
+                console.error('Resume analysis failed:', error);
+                alert('Resume analysis failed. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Display resume analysis results (similar to skill gap analyzer)
+        function displayResumeAnalysisResults(suitableJobs, extractedSkills, experience, filename) {
+            const container = document.getElementById('resume-analysis-results');
+            
+            if (suitableJobs.length === 0) {
+                container.innerHTML = `
+                    <div class="no-jobs-found">
+                        <div class="no-jobs-icon">😔</div>
+                        <h3 class="no-jobs-title">No Suitable Jobs Found</h3>
+                        <p class="no-jobs-message">
+                            Based on the skills extracted from your resume (${extractedSkills.join(', ')}) and experience level (${experience.level}), 
+                            we couldn't find jobs with at least 30% skill match.<br><br>
+                            <strong>Suggestions:</strong><br>
+                            • Your resume might need more relevant technical skills<br>
+                            • Consider adding more specific technologies and tools<br>
+                            • Ensure your skills section is clearly formatted
+                        </p>
+                        <button class="btn-primary" onclick="document.getElementById('resume-manual-role-selection').style.display='block'; document.getElementById('resume-manual-role-selection').scrollIntoView({behavior: 'smooth'});">
+                            🎯 Browse All Available Roles
+                        </button>
+                    </div>
+                `;
+            } else {
+                const excellentJobs = suitableJobs.filter(job => job.matchCategory === 'excellent');
+                const goodJobs = suitableJobs.filter(job => job.matchCategory === 'good');
+                const averageJobs = suitableJobs.filter(job => job.matchCategory === 'average');
+                
+                // Calculate overall ATS score
+                const atsScore = calculateATSScore(extractedSkills, experience.years, experience.level);
+                
+                container.innerHTML = `
+                    <div class="ats-score-card">
+                        <h3 style="margin-bottom: 1rem;">📄 Resume Analysis Complete</h3>
+                        <div class="ats-score-main">${atsScore.score}%</div>
+                        <div class="ats-score-category">ATS Score - ${atsScore.category}</div>
+                        <p>File: ${filename} | Skills: ${extractedSkills.length} | Experience: ${experience.years} years</p>
+                        
+                        <div class="ats-score-details">
+                            <div class="ats-detail">
+                                <span class="ats-detail-number">${suitableJobs.length}</span>
+                                <span class="ats-detail-label">Suitable Jobs</span>
+                            </div>
+                            <div class="ats-detail">
+                                <span class="ats-detail-number">${excellentJobs.length}</span>
+                                <span class="ats-detail-label">Excellent Matches</span>
+                            </div>
+                            <div class="ats-detail">
+                                <span class="ats-detail-number">${goodJobs.length}</span>
+                                <span class="ats-detail-label">Good Matches</span>
+                            </div>
+                            <div class="ats-detail">
+                                <span class="ats-detail-number">${extractedSkills.length}</span>
+                                <span class="ats-detail-label">Skills Extracted</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="skills-comparison" style="margin: 2rem 0;">
+                        <div class="skills-column">
+                            <h4>🔍 Skills Extracted from Resume (${extractedSkills.length})</h4>
+                            ${extractedSkills.map(skill => `
+                                <span class="skill-item matched">${skill}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-bottom: 1.5rem; color: #333;">🎯 Suitable Jobs Found (${suitableJobs.length})</h3>
+                    <div class="job-cards">
+                        ${suitableJobs.slice(0, 12).map(job => `
+                            <div class="job-card ${job.matchCategory}">
+                                <div class="job-title">${job.title}</div>
+                                <div class="job-meta">
+                                    <span class="job-experience">${job.experienceLevel} (${job.yearsOfExperience} years)</span>
+                                    <span class="job-match-score ${job.matchCategory}">${job.matchPercentage}% Match</span>
+                                </div>
+                                
+                                <div class="job-skills">
+                                    <h5>✅ Your Matching Skills (${job.matchedSkills.length}):</h5>
+                                    <div class="job-skill-tags">
+                                        ${job.matchedSkills.map(skill => `
+                                            <span class="job-skill-tag matched">${skill}</span>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                
+                                ${job.missingSkills.length > 0 ? `
+                                    <div class="job-skills">
+                                        <h5>📚 Skills to Learn (${job.missingSkills.length}):</h5>
+                                        <div class="job-skill-tags">
+                                            ${job.missingSkills.slice(0, 6).map(skill => `
+                                                <span class="job-skill-tag missing">${skill}</span>
+                                            `).join('')}
+                                            ${job.missingSkills.length > 6 ? `<span class="job-skill-tag missing">+${job.missingSkills.length - 6} more</span>` : ''}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    ${suitableJobs.length > 12 ? `
+                        <div style="text-align: center; margin-top: 2rem;">
+                            <p style="color: #666;">Showing top 12 matches out of ${suitableJobs.length} suitable jobs</p>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="suggestions">
+                        <h3>💡 Resume-Based Recommendations</h3>
+                        ${generateResumeRecommendations(atsScore, suitableJobs, extractedSkills).map(rec => `
+                            <div class="suggestion-item">
+                                <div class="suggestion-icon">💡</div>
+                                <div class="suggestion-text">${rec}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            container.classList.add('active');
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Generate resume-specific recommendations
+        function generateResumeRecommendations(atsScore, suitableJobs, skills) {
+            const recommendations = [];
+            
+            recommendations.push(`📊 Your resume has been analyzed and scored ${atsScore.score}% by our ATS system.`);
+            
+            if (suitableJobs.length > 0) {
+                recommendations.push(`🎉 Great! We found ${suitableJobs.length} suitable job opportunities for your profile.`);
+                
+                const excellentJobs = suitableJobs.filter(job => job.matchCategory === 'excellent');
+                if (excellentJobs.length > 0) {
+                    recommendations.push(`🚀 You have ${excellentJobs.length} excellent matches - consider applying immediately!`);
+                }
+                
+                const topJob = suitableJobs[0];
+                recommendations.push(`🎯 Your best match is ${topJob.title} with ${topJob.matchPercentage}% compatibility.`);
+                
+                if (topJob.missingSkills.length > 0) {
+                    recommendations.push(`📚 To improve further, focus on: ${topJob.missingSkills.slice(0, 3).join(', ')}`);
+                }
+            } else {
+                recommendations.push('🔧 Your resume needs optimization to match current job market requirements.');
+                recommendations.push('📝 Consider adding more specific technical skills and technologies.');
+            }
+            
+            if (atsScore.score < 70) {
+                recommendations.push('📈 To improve your ATS score: Add more keywords, quantify achievements, and ensure clear formatting.');
+            }
+            
+            recommendations.push('💼 Consider tailoring your resume for specific job applications using the role selection below.');
+            
+            return recommendations;
+        }
+
+        // Load roles for resume scoring select
+        function loadResumeRolesSelect() {
+            const allJobs = generateAllJobsFromDataset();
+            const select = document.getElementById('resume-target-roles');
+            select.innerHTML = '';
+            
+            allJobs.forEach((job, index) => {
+                const option = document.createElement('option');
+                option.value = JSON.stringify(job);
+                option.textContent = `${job.title} - ${job.experienceLevel} (${job.yearsOfExperience} years)`;
+                select.appendChild(option);
+            });
+        }
+
+        // Filter resume roles
+        function filterResumeRoles() {
+            const searchTerm = document.getElementById('resume-role-search').value.toLowerCase();
+            const options = document.querySelectorAll('#resume-target-roles option');
+            
+            options.forEach(option => {
+                const text = option.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+        }
+
+        // Score resume for specific roles
+        async function scoreResumeForSpecificRoles() {
+            const select = document.getElementById('resume-target-roles');
+            const selectedOptions = Array.from(select.selectedOptions);
+            
+            if (selectedOptions.length === 0) {
+                alert('Please select at least one role to score against');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Mock extracted skills (in real app, this would come from the uploaded resume)
+                const extractedSkills = [
+                    'Python', 'JavaScript', 'React', 'SQL', 'Git', 'AWS', 'Docker',
+                    'Node.js', 'MongoDB', 'REST APIs', 'HTML', 'CSS', 'Linux'
+                ];
+                
+                const analysisResults = [];
+                
+                selectedOptions.forEach(option => {
+                    const job = JSON.parse(option.value);
+                    const result = analyzeJobMatch(extractedSkills, job);
+                    result.isResumeAnalysis = true; // Flag to show this is resume-based
+                    analysisResults.push(result);
+                });
+                
+                displayResumeSpecificRoleResults(analysisResults, extractedSkills);
+                
+            } catch (error) {
+                console.error('Resume role analysis failed:', error);
+                alert('Resume role analysis failed. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Display resume-specific role results
+        function displayResumeSpecificRoleResults(results, extractedSkills) {
+            const container = document.getElementById('resume-scoring-results');
+            
+            // Calculate overall resume ATS score
+            const avgScore = Math.round(results.reduce((sum, result) => sum + result.matchPercentage, 0) / results.length);
+            const atsScore = calculateATSScore(extractedSkills, 3, 'Mid-level'); // Mock experience
+            
+            container.innerHTML = `
+                <div class="ats-score-card">
+                    <h3 style="margin-bottom: 1rem;">📊 Resume Scoring Results</h3>
+                    <div class="ats-score-main">${atsScore.score}%</div>
+                    <div class="ats-score-category">Overall ATS Score - ${atsScore.category}</div>
+                    <p>Resume analyzed against ${results.length} selected roles</p>
+                    
+                    <div class="ats-score-details">
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${results.filter(r => r.matchPercentage >= 70).length}</span>
+                            <span class="ats-detail-label">Good Matches</span>
+                        </div>
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${avgScore}%</span>
+                            <span class="ats-detail-label">Avg Role Match</span>
+                        </div>
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${extractedSkills.length}</span>
+                            <span class="ats-detail-label">Resume Skills</span>
+                        </div>
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${results.length}</span>
+                            <span class="ats-detail-label">Roles Analyzed</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-bottom: 2rem; color: #333;">📊 Detailed Resume vs Role Analysis</h3>
+                
+                ${results.map(result => `
+                    <div class="job-card ${result.matchCategory}" style="margin-bottom: 2rem;">
+                        <div class="job-title">${result.title}</div>
+                        <div class="job-meta">
+                            <span class="job-experience">${result.experienceLevel} (${result.yearsOfExperience} years)</span>
+                            <span class="job-match-score ${result.matchCategory}">${result.matchPercentage}% Match</span>
+                        </div>
+                        
+                        <div class="skills-comparison" style="margin: 1.5rem 0;">
+                            <div class="skills-column">
+                                <h4>✅ Resume Skills Matched (${result.matchedSkills.length})</h4>
+                                ${result.matchedSkills.map(skill => `
+                                    <span class="skill-item matched">${skill}</span>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="skills-column missing">
+                                <h4>❌ Skills Missing from Resume (${result.missingSkills.length})</h4>
+                                ${result.missingSkills.map(skill => `
+                                    <span class="skill-item missing">${skill}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="suggestions">
+                            <h4>💡 Resume Improvement for ${result.title}</h4>
+                            ${result.suggestions.map(suggestion => `
+                                <div class="suggestion-item">
+                                    <div class="suggestion-icon">💡</div>
+                                    <div class="suggestion-text">${suggestion}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+            
+            container.classList.add('active');
+            container.scrollIntoView({ behavior: 'smooth' });
+            
+            // Update suggestions section
+            document.getElementById('suggestions-results').innerHTML = container.innerHTML;
+            document.getElementById('suggestions-results').classList.add('active');
+        }
+
+        // Display comprehensive resume results
+        function displayComprehensiveResumeResults(atsScore, roleScores, extractedSkills, experienceYears) {
+            const container = document.getElementById('resume-scoring-results');
+            
+            container.innerHTML = `
+                <div class="ats-score-card">
+                    <h3 style="margin-bottom: 1rem;">📄 Complete Resume Analysis</h3>
+                    <div class="ats-score-main">${atsScore.score}%</div>
+                    <div class="ats-score-category">${atsScore.category}</div>
+                    <p>${atsScore.recommendation}</p>
+                    
+                    <div class="ats-score-details">
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${extractedSkills.length}</span>
+                            <span class="ats-detail-label">Skills Extracted</span>
+                        </div>
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${experienceYears}</span>
+                            <span class="ats-detail-label">Years Experience</span>
+                        </div>
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${atsScore.breakdown.highValueSkills}</span>
+                            <span class="ats-detail-label">High-Value Skills</span>
+                        </div>
+                        <div class="ats-detail">
+                            <span class="ats-detail-number">${roleScores.filter(r => r.score >= 70).length}</span>
+                            <span class="ats-detail-label">Suitable Roles</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skills-comparison" style="margin: 2rem 0;">
+                    <div class="skills-column">
+                        <h4>🔍 Extracted Skills (${extractedSkills.length})</h4>
+                        ${extractedSkills.map(skill => `
+                            <span class="skill-item matched">${skill}</span>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <h3 style="margin-bottom: 1.5rem; color: #333;">🎯 Role Compatibility Analysis</h3>
+                <div class="role-scoring-grid">
+                    ${roleScores.map(role => `
+                        <div class="role-score-card">
+                            <div class="role-score-header">
+                                <div class="role-score-title">${role.role}</div>
+                                <div class="role-score-percentage">${role.score}%</div>
+                            </div>
+                            <div class="role-score-breakdown">
+                                <span>Skills Match: ${role.matchPercentage}%</span>
+                                <span>Ready: ${role.matchedSkills.length}/${role.matchedSkills.length + role.missingSkills.length}</span>
+                            </div>
+                            <div class="role-readiness ${role.readiness}">
+                                ${role.readiness === 'ready' ? '✅ Ready to Apply' : 
+                                  role.readiness === 'almost' ? '🟡 Almost Ready' : '🔴 Needs Preparation'}
+                            </div>
+                            ${role.missingSkills.length > 0 ? `
+                                <div style="margin-top: 1rem; font-size: 0.85rem; color: #666;">
+                                    <strong>Missing:</strong> ${role.missingSkills.slice(0, 3).join(', ')}
+                                    ${role.missingSkills.length > 3 ? ` +${role.missingSkills.length - 3} more` : ''}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="suggestions">
+                    <h3>💡 Resume Improvement Suggestions</h3>
+                    ${generateComprehensiveRecommendations(atsScore, roleScores, extractedSkills).map(rec => `
+                        <div class="suggestion-item">
+                            <div class="suggestion-icon">💡</div>
+                            <div class="suggestion-text">${rec}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            container.classList.add('active');
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Generate comprehensive recommendations
+        function generateComprehensiveRecommendations(atsScore, roleScores, skills) {
+            const recommendations = [];
+            
+            recommendations.push('📊 Your resume has been analyzed using our AI model trained on 1000+ resumes.');
+            
+            if (atsScore.score >= 80) {
+                recommendations.push('🎉 Excellent resume! You have a strong chance of passing ATS filters.');
+                recommendations.push('🚀 Focus on tailoring your resume for specific job applications.');
+            } else if (atsScore.score >= 65) {
+                recommendations.push('👍 Good resume with room for improvement.');
+                recommendations.push('📝 Add more quantifiable achievements and project details.');
+            } else {
+                recommendations.push('🔧 Your resume needs significant improvements for better ATS compatibility.');
+                recommendations.push('📚 Focus on adding more relevant technical skills and experience.');
+            }
+            
+            // Top role recommendations
+            const topRoles = roleScores.filter(role => role.score >= 60).slice(0, 2);
+            if (topRoles.length > 0) {
+                recommendations.push(`🎯 Best role matches: ${topRoles.map(r => r.role).join(', ')}`);
+            }
+            
+            // Skill gap recommendations
+            const skillGaps = roleScores[0].missingSkills;
+            if (skillGaps.length > 0) {
+                recommendations.push(`🔥 High-priority skills to add: ${skillGaps.slice(0, 4).join(', ')}`);
+            }
+            
+            recommendations.push('💼 Consider highlighting your achievements with specific metrics and numbers.');
+            recommendations.push('🎨 Ensure your resume format is ATS-friendly with clear sections and standard fonts.');
+            
+            return recommendations;
+        }
+
+        // Legacy resume scoring function (updated to use new workflow)
+        async function scoreResume() {
+            // Redirect to the new upload and analyze workflow
+            await uploadAndAnalyzeResume();
+        }
+
+        // Profile Management
+        async function updateProfile() {
+            const education = document.getElementById('profile-education').value;
+            const degree = document.getElementById('profile-degree').value;
+            const experience = document.getElementById('profile-experience').value;
+
+            // Mock profile update
+            alert('Profile updated successfully!');
+            closeProfile();
+        }
+    </script>
+</body>
+</html>

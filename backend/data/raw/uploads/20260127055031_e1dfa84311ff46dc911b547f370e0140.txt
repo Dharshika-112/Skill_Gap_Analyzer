@@ -1,0 +1,19 @@
+
+        John Doe
+        Software Developer
+        
+        TECHNICAL SKILLS
+        • Programming: Python, JavaScript, Java, C#
+        • Web Technologies: React, Node.js, HTML, CSS
+        • Databases: MySQL, MongoDB, PostgreSQL
+        • Tools: Git, Docker, AWS, Jenkins
+        
+        EXPERIENCE
+        Software Developer at TechCorp (2 years)
+        - Developed web applications using React and Node.js
+        - Implemented REST APIs and database integration
+        - Collaborated with cross-functional teams
+        
+        EDUCATION
+        Bachelor of Science in Computer Science
+        

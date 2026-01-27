@@ -93,13 +93,28 @@ class DatasetNormalizer:
         # Remove brackets and quotes
         skills_str = skills_str.strip("[]'\"")
         
-        # Split by common delimiters
-        skills = re.split(r'[,;/\|]', skills_str)
+        # Handle semicolon-separated (common in your dataset)
+        if ';' in skills_str:
+            skills = skills_str.split(';')
+        # Handle comma-separated
+        elif ',' in skills_str:
+            skills = skills_str.split(',')
+        # Handle pipe-separated
+        elif '|' in skills_str:
+            skills = skills_str.split('|')
+        # Handle slash-separated
+        elif '/' in skills_str:
+            skills = skills_str.split('/')
+        else:
+            # Single skill or space-separated
+            skills = [skills_str]
         
         # Clean and filter
         cleaned = []
         for skill in skills:
-            skill = skill.strip().lower()
+            skill = skill.strip()
+            # Remove extra whitespace
+            skill = re.sub(r'\s+', ' ', skill)
             if skill and len(skill) > 1:
                 cleaned.append(skill)
         
@@ -128,36 +143,87 @@ class DatasetNormalizer:
         return found_skills
     
     def _normalize_skill_name(self, skill: str) -> str:
-        """Normalize skill name (js→javascript, sql→SQL, etc)"""
-        skill = skill.strip().lower()
+        """Normalize skill name (js→JavaScript, SQL→SQL, etc) - preserves case for common tech"""
+        skill_original = skill.strip()
+        skill_lower = skill_original.lower()
         
-        # Common mappings
+        # Common mappings (preserve proper capitalization)
         mapping = {
-            'js': 'javascript',
-            'ts': 'typescript',
-            'py': 'python',
-            'cpp': 'c++',
-            'c#': 'csharp',
-            'obj-c': 'objective-c',
-            'asp': 'asp.net',
-            'mssql': 'sql server',
-            'mysql': 'mysql',
-            'pg': 'postgresql',
-            'mongo': 'mongodb',
-            'ml': 'machine learning',
-            'ai': 'artificial intelligence',
-            'cv': 'computer vision',
-            'nlp': 'natural language processing',
-            'rnn': 'recurrent neural network',
-            'cnn': 'convolutional neural network',
-            'dl': 'deep learning',
-            'dsa': 'data structures',
-            'oop': 'object oriented programming',
-            'ci/cd': 'continuous integration/deployment',
-            'etl': 'extract transform load'
+            'js': 'JavaScript',
+            'javascript': 'JavaScript',
+            'ts': 'TypeScript',
+            'typescript': 'TypeScript',
+            'py': 'Python',
+            'python': 'Python',
+            'cpp': 'C++',
+            'c++': 'C++',
+            'c#': 'C#',
+            'csharp': 'C#',
+            'obj-c': 'Objective-C',
+            'objective-c': 'Objective-C',
+            'asp': 'ASP.NET',
+            'asp.net': 'ASP.NET',
+            'mssql': 'SQL Server',
+            'sql server': 'SQL Server',
+            'mysql': 'MySQL',
+            'pg': 'PostgreSQL',
+            'postgresql': 'PostgreSQL',
+            'mongo': 'MongoDB',
+            'mongodb': 'MongoDB',
+            'ml': 'Machine Learning',
+            'machine learning': 'Machine Learning',
+            'ai': 'Artificial Intelligence',
+            'artificial intelligence': 'Artificial Intelligence',
+            'cv': 'Computer Vision',
+            'computer vision': 'Computer Vision',
+            'nlp': 'Natural Language Processing',
+            'natural language processing': 'Natural Language Processing',
+            'rnn': 'Recurrent Neural Network',
+            'cnn': 'Convolutional Neural Network',
+            'dl': 'Deep Learning',
+            'deep learning': 'Deep Learning',
+            'dsa': 'Data Structures',
+            'data structures': 'Data Structures',
+            'oop': 'Object Oriented Programming',
+            'object oriented programming': 'Object Oriented Programming',
+            'ci/cd': 'CI/CD',
+            'continuous integration/deployment': 'CI/CD',
+            'etl': 'ETL',
+            'extract transform load': 'ETL',
+            'sql': 'SQL',
+            'git': 'Git',
+            'html': 'HTML',
+            'css': 'CSS',
+            'html5': 'HTML5',
+            'css3': 'CSS3',
+            'react': 'React',
+            'angular': 'Angular',
+            'vue.js': 'Vue.js',
+            'node.js': 'Node.js',
+            'django': 'Django',
+            'flask': 'Flask',
+            'spring boot': 'Spring Boot',
+            'spring': 'Spring',
+            'docker': 'Docker',
+            'kubernetes': 'Kubernetes',
+            'aws': 'AWS',
+            'azure': 'Azure',
+            'gcp': 'Google Cloud Platform',
+            'google cloud platform': 'Google Cloud Platform',
         }
         
-        return mapping.get(skill, skill)
+        # Check mapping first
+        if skill_lower in mapping:
+            return mapping[skill_lower]
+        
+        # If not in mapping, capitalize properly (Title Case for multi-word)
+        if ' ' in skill_original or '-' in skill_original:
+            # Multi-word: Title Case
+            words = re.split(r'[\s\-]+', skill_original)
+            return ' '.join([w.capitalize() for w in words])
+        else:
+            # Single word: Capitalize first letter
+            return skill_original.capitalize()
     
     def extract_roles(self) -> Dict[str, List[str]]:
         """Extract and categorize roles from dataset"""

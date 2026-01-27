@@ -1,0 +1,14 @@
+
+        JOHN DOE - Software Developer
+        
+        TECHNICAL SKILLS:
+        Programming Languages: Python, JavaScript, Java, C++
+        Web Technologies: React, Node.js, HTML, CSS
+        Databases: MySQL, MongoDB, PostgreSQL
+        Tools: Git, Docker, Jenkins
+        Machine Learning: TensorFlow, PyTorch
+        
+        EXPERIENCE:
+        Software Developer Intern - ABC Company (6 months)
+        Full-time Developer - XYZ Corp (2 years)
+        
