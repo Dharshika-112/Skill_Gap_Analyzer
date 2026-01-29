@@ -384,23 +384,6 @@ GET  /api/roles/{role_id}              # Get specific role details
 
 ---
 
-## 🎨 Screenshots
-
-### Dashboard Overview
-<div align="center">
-<img src="https://via.placeholder.com/800x500/667EEA/FFFFFF?text=CareerBoost+AI+Dashboard" alt="Dashboard" width="700"/>
-</div>
-
-### Skill Gap Analysis
-<div align="center">
-<img src="https://via.placeholder.com/800x500/48BB78/FFFFFF?text=Skill+Gap+Analysis+Results" alt="Skill Analysis" width="700"/>
-</div>
-
-### Resume Scoring Results
-<div align="center">
-<img src="https://via.placeholder.com/800x500/ED8936/FFFFFF?text=Resume+Scoring+Results" alt="Resume Scoring" width="700"/>
-</div>
-
 ---
 
 ## 🚀 Deployment
