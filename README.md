@@ -35,9 +35,6 @@ CareerBoost AI is a comprehensive career development platform that combines inte
 ## ✨ Key Features
 
 ### 🎯 AI Skill Gap Analysis
-<div align="center">
-<img src="https://via.placeholder.com/800x400/4F46E5/FFFFFF?text=Skill+Gap+Analysis+Interface" alt="Skill Gap Analysis" width="600"/>
-</div>
 
 - **2,346+ Skills Database** with intelligent categorization
 - **ML-Powered Role Matching** using RandomForest + Neural Networks
@@ -47,9 +44,6 @@ CareerBoost AI is a comprehensive career development platform that combines inte
 - **Quiz Assessments** for skill validation
 
 ### 📄 Advanced Resume Scoring
-<div align="center">
-<img src="https://via.placeholder.com/800x400/10B981/FFFFFF?text=Resume+Scoring+Interface" alt="Resume Scoring" width="600"/>
-</div>
 
 - **PDF Processing** with PyPDF2 integration
 - **Dual Scoring Types**: General ATS + Role-Based Analysis
@@ -59,9 +53,6 @@ CareerBoost AI is a comprehensive career development platform that combines inte
 - **Progress Tracking** with visual analytics
 
 ### 🏢 Career Role Explorer
-<div align="center">
-<img src="https://via.placeholder.com/800x400/F59E0B/FFFFFF?text=Career+Roles+Dashboard" alt="Career Roles" width="600"/>
-</div>
 
 - **218 Career Roles** with comprehensive information
 - **Skill Requirements** mapping for each role
