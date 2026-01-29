@@ -205,15 +205,6 @@ cd backend && python enhanced_resume_scoring_server.py &
 cd frontend-react && npm start
 ```
 
-### 🌐 Access the Application
-
-- **🏠 Main Application**: http://localhost:3000
-- **📊 Dashboard**: http://localhost:3000/dashboard
-- **🎯 Skill Gap Analyzer**: http://localhost:3000/skill-gap-analyzer
-- **📄 Resume Scoring**: http://localhost:3000/resume-scoring
-- **👤 User Profile**: http://localhost:3000/profile
-
----
 
 ## 🎯 How It Works
 
@@ -344,33 +335,7 @@ cd frontend-react && npm test
 
 ---
 
-## 🚀 Deployment
 
-### 🌐 Production Deployment
-
-```bash
-# Build React app
-cd frontend-react
-npm run build
-
-# Start production servers
-python simple_auth_server.py &
-cd backend && python simple_role_server.py &
-cd backend && python simple_enhanced_skill_server.py &
-cd backend && python enhanced_resume_scoring_server.py &
-
-# Serve React build
-npx serve -s frontend-react/build -l 3000
-```
-
-### 🔧 Environment Variables
-
-```bash
-# Create .env file
-MONGODB_URL=mongodb://localhost:27017/
-JWT_SECRET_KEY=your-super-secret-jwt-key
-CORS_ORIGINS=["http://localhost:3000"]
-```
 
 ---
 
