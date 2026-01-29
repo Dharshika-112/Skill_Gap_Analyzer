@@ -49,17 +49,17 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('/api/auth/login', {
+      const response = await axios.post('http://localhost:8003/auth/login', {
         email,
         password
       });
 
-      const { access_token, user: userData } = response.data;
+      const { token, user: userData } = response.data;
       
-      setToken(access_token);
+      setToken(token);
       setUser(userData);
       
-      localStorage.setItem('token', access_token);
+      localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
       
       return { success: true };
@@ -72,20 +72,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const signup = async (name, email, password) => {
+  const signup = async (name, email, password, optionalProfile = {}) => {
     try {
-      const response = await axios.post('/api/auth/signup', {
+      const signupData = {
         name,
         email,
-        password
-      });
+        password,
+        ...optionalProfile
+      };
 
-      const { access_token, user: userData } = response.data;
+      const response = await axios.post('http://localhost:8003/auth/signup', signupData);
+
+      const { token, user: userData } = response.data;
       
-      setToken(access_token);
+      setToken(token);
       setUser(userData);
       
-      localStorage.setItem('token', access_token);
+      localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
       
       return { success: true };
@@ -93,7 +96,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Signup error:', error);
       return { 
         success: false, 
-        error: error.response?.data?.detail || 'Signup failed' 
+        error: error.response?.data?.error || error.response?.data?.detail || 'Signup failed' 
       };
     }
   };
@@ -108,7 +111,13 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await axios.put('/api/auth/profile', profileData);
+      // Add user_id to the request (in a real app, this would come from JWT)
+      const requestData = {
+        ...profileData,
+        user_id: user?.id
+      };
+      
+      const response = await axios.put('http://localhost:8003/auth/profile', requestData);
       const updatedUser = response.data.user;
       
       setUser(updatedUser);
@@ -119,7 +128,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Profile update error:', error);
       return { 
         success: false, 
-        error: error.response?.data?.detail || 'Profile update failed' 
+        error: error.response?.data?.error || error.response?.data?.detail || 'Profile update failed' 
       };
     }
   };

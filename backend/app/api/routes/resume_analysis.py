@@ -1,9 +1,10 @@
 """
 Resume Analysis Routes - AI-Powered ATS System
 Combines ML-based ATS scoring with skill gap analysis
+Enhanced with Deep Learning Resume Parsing
 """
 
-from fastapi import APIRouter, HTTPException, UploadFile, File, Header, Depends
+from fastapi import APIRouter, HTTPException, UploadFile, File, Header, Depends, Form
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from ...core.database import get_collection
@@ -28,9 +29,18 @@ from ...services.intelligent_role_matcher import (
     get_skill_recommendations,
     get_skill_importance
 )
+# New deep learning imports
+from ...services.deep_learning_parser import parse_resume_with_deep_learning
+from ...services.role_based_ml import get_role_ml_system, predict_role_based_score, compare_resume_with_role
 from datetime import datetime
+import uuid
+from pathlib import Path
 
 router = APIRouter()
+
+# Upload directory
+UPLOAD_DIR = Path(__file__).parents[3] / 'data' / 'raw' / 'uploads'
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 class ATSAnalysisRequest(BaseModel):
     user_skills: List[str]
@@ -1067,3 +1077,510 @@ def _generate_recommendations(missing_skills: List[str], match_percentage: float
             recommendations.append(f"📖 Medium Priority Skills: {', '.join(medium_priority[:3])}")
     
     return recommendations
+
+# ========================================
+# NEW DEEP LEARNING RESUME PARSING ENDPOINTS
+# ========================================
+
+@router.post("/upload-resume-deep-learning")
+async def upload_resume_deep_learning(
+    file: UploadFile = File(...),
+    user_id: Optional[str] = Form(None),
+    authorization: Optional[str] = Header(None)
+):
+    """
+    🧠 NEW WORKFLOW: Upload and parse resume using deep learning techniques
+    Step 1: Resume upload only (no job description initially)
+    Returns: Extracted data ready for scoring type selection
+    """
+    if authorization:
+        user = _get_user_from_token(authorization)
+        user_id = user.get('user_id')
+    
+    try:
+        # Validate file type
+        allowed_extensions = {'.pdf', '.docx', '.txt'}
+        file_extension = Path(file.filename).suffix.lower()
+        
+        if file_extension not in allowed_extensions:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unsupported file type. Allowed: {', '.join(allowed_extensions)}"
+            )
+        
+        # Save uploaded file
+        file_id = str(uuid.uuid4())
+        timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+        safe_filename = f"{timestamp}_{file_id}{file_extension}"
+        file_path = UPLOAD_DIR / safe_filename
+        
+        # Save file
+        content = await file.read()
+        with open(file_path, 'wb') as f:
+            f.write(content)
+        
+        # Progress tracking for real-time updates
+        progress_steps = []
+        
+        def progress_callback(step_description: str, percentage: int):
+            progress_steps.append({
+                'step': step_description,
+                'percentage': percentage,
+                'timestamp': datetime.utcnow().isoformat()
+            })
+        
+        # Parse resume using deep learning
+        parsing_result = parse_resume_with_deep_learning(
+            str(file_path), 
+            progress_callback=progress_callback
+        )
+        
+        if not parsing_result['success']:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Resume parsing failed: {parsing_result.get('error', 'Unknown error')}"
+            )
+        
+        # Get role ML system info
+        role_ml_system = get_role_ml_system()
+        available_roles = role_ml_system.get_available_roles()
+        
+        # Prepare response with extracted data
+        response_data = {
+            'success': True,
+            'file_id': file_id,
+            'filename': file.filename,
+            'parsing_method': parsing_result.get('extraction_method', 'Deep Learning'),
+            'pdf_type': parsing_result.get('pdf_type', 'digital'),
+            'confidence': parsing_result.get('confidence', 0.85),
+            'extracted_data': {
+                'skills': parsing_result.get('skills', []),
+                'skills_detailed': parsing_result.get('skills_detailed', []),
+                'experience': parsing_result.get('experience', {}),
+                'sections': list(parsing_result.get('sections', {}).keys()),
+                'text_length': len(parsing_result.get('text', ''))
+            },
+            'progress_steps': progress_steps,
+            'metadata': parsing_result.get('metadata', {}),
+            'next_steps': {
+                'general_ats_scoring': '/api/resume/general-ats-scoring',
+                'role_based_scoring': '/api/resume/role-based-scoring',
+                'available_roles': available_roles
+            }
+        }
+        
+        # Store in database if user_id provided
+        if user_id:
+            try:
+                collection = get_collection('resume_analyses')
+                analysis_record = {
+                    'analysis_id': file_id,
+                    'user_id': user_id,
+                    'filename': file.filename,
+                    'file_path': str(file_path),
+                    'parsing_result': parsing_result,
+                    'created_at': datetime.utcnow(),
+                    'analysis_type': 'deep_learning_parsing'
+                }
+                collection.insert_one(analysis_record)
+            except Exception as e:
+                # Don't fail the request if database storage fails
+                print(f"[WARNING] Failed to store analysis in database: {e}")
+        
+        return response_data
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
+
+@router.post("/general-ats-scoring")
+async def general_ats_scoring(
+    file_id: str = Form(...),
+    user_id: Optional[str] = Form(None),
+    authorization: Optional[str] = Header(None)
+):
+    """
+    🎯 General ATS Scoring using the full dataset
+    Uses the existing ATS system with all resume data
+    """
+    if authorization:
+        user = _get_user_from_token(authorization)
+        user_id = user.get('user_id')
+    
+    try:
+        # Retrieve parsing results
+        if user_id:
+            collection = get_collection('resume_analyses')
+            analysis_record = collection.find_one({
+                'analysis_id': file_id,
+                'user_id': user_id
+            })
+            
+            if not analysis_record:
+                raise HTTPException(status_code=404, detail="Resume analysis not found")
+            
+            parsing_result = analysis_record['parsing_result']
+        else:
+            raise HTTPException(status_code=400, detail="User ID required for analysis")
+        
+        # Extract resume data
+        skills = parsing_result.get('skills', [])
+        experience_info = parsing_result.get('experience', {})
+        
+        # Prepare resume data for ATS scoring
+        resume_data = {
+            'skills': skills,
+            'experience_years': experience_info.get('total_years', 0),
+            'experience_level': experience_info.get('level', 'fresher'),
+            'projects_count': len(parsing_result.get('sections', {}).get('projects', '').split('\n')) if 'projects' in parsing_result.get('sections', {}) else 0,
+            'education': parsing_result.get('sections', {}).get('education', ''),
+            'certifications': parsing_result.get('sections', {}).get('certifications', '')
+        }
+        
+        # Perform ATS analysis using existing system
+        ats_request = ATSAnalysisRequest(
+            user_skills=skills,
+            experience_years=experience_info.get('total_years', 0),
+            education="Bachelor's",  # Default, can be enhanced
+            certifications=[],  # Can be extracted from resume
+            target_role=None,  # Will analyze multiple roles
+            projects_count=resume_data['projects_count']
+        )
+        
+        # Get comprehensive analysis (reuse existing function)
+        analysis_result = await comprehensive_ats_analysis(ats_request, authorization)
+        
+        # Enhanced analysis with deep learning insights
+        enhanced_results = {
+            'analysis_type': 'General ATS Scoring',
+            'overall_score': analysis_result.get('ats_scoring', {}).get('ats_score', 0),
+            'confidence': parsing_result.get('confidence', 0.85),
+            'parsing_method': parsing_result.get('extraction_method', 'Deep Learning'),
+            'detailed_breakdown': {
+                'base_score': 40,  # Minimum ATS score
+                'skills_score': min(30, len(skills) * 3),  # Up to 30 points
+                'experience_score': min(20, experience_info.get('total_years', 0) * 5),  # Up to 20 points
+                'bonus_score': min(10, len([s for s in skills if s.lower() in ['python', 'java', 'react', 'aws', 'docker']]) * 2)  # High-value skills
+            },
+            'skill_analysis': {
+                'total_skills': len(skills),
+                'technical_skills': len([s for s in skills if any(tech in s.lower() for tech in ['python', 'java', 'javascript', 'react', 'node', 'sql'])]),
+                'high_demand_skills': [s for s in skills if s.lower() in ['python', 'java', 'react', 'aws', 'docker', 'kubernetes', 'tensorflow']],
+                'skills_by_category': _categorize_skills(skills)
+            },
+            'experience_analysis': {
+                'detected_level': experience_info.get('level', 'fresher'),
+                'years_detected': experience_info.get('total_years', 0),
+                'keywords_found': experience_info.get('keywords', []),
+                'positions_detected': experience_info.get('positions', [])
+            },
+            'comprehensive_analysis': analysis_result,
+            'recommendations': _generate_ats_recommendations(resume_data, analysis_result.get('ats_scoring', {})),
+            'comparison_with_dataset': {
+                'percentile_rank': _calculate_percentile_rank(analysis_result.get('ats_scoring', {}).get('ats_score', 0)),
+                'similar_profiles': analysis_result.get('ats_scoring', {}).get('similar_resumes', [])[:3] if analysis_result.get('ats_scoring', {}).get('similar_resumes') else []
+            }
+        }
+        
+        # Update database record
+        if user_id:
+            collection.update_one(
+                {'analysis_id': file_id, 'user_id': user_id},
+                {'$set': {
+                    'general_ats_results': enhanced_results,
+                    'updated_at': datetime.utcnow()
+                }}
+            )
+        
+        return {
+            'success': True,
+            'analysis_id': file_id,
+            'results': enhanced_results
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"ATS scoring failed: {str(e)}")
+
+@router.post("/role-based-scoring")
+async def role_based_scoring(
+    file_id: str = Form(...),
+    target_role: str = Form(...),
+    user_id: Optional[str] = Form(None),
+    authorization: Optional[str] = Header(None)
+):
+    """
+    🎯 Role-Based Scoring using role-specific ML models
+    Filters ATS dataset by Job_Role and uses specialized model
+    """
+    if authorization:
+        user = _get_user_from_token(authorization)
+        user_id = user.get('user_id')
+    
+    try:
+        # Retrieve parsing results
+        if user_id:
+            collection = get_collection('resume_analyses')
+            analysis_record = collection.find_one({
+                'analysis_id': file_id,
+                'user_id': user_id
+            })
+            
+            if not analysis_record:
+                raise HTTPException(status_code=404, detail="Resume analysis not found")
+            
+            parsing_result = analysis_record['parsing_result']
+        else:
+            raise HTTPException(status_code=400, detail="User ID required for analysis")
+        
+        # Validate target role
+        role_ml_system = get_role_ml_system()
+        available_roles = role_ml_system.get_available_roles()
+        if target_role not in available_roles:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Role '{target_role}' not available. Available roles: {available_roles}"
+            )
+        
+        # Extract resume data
+        skills = parsing_result.get('skills', [])
+        experience_info = parsing_result.get('experience', {})
+        
+        # Prepare resume data for role-based scoring
+        resume_data = {
+            'skills': skills,
+            'experience': experience_info,
+            'education': parsing_result.get('sections', {}).get('education', ''),
+            'certifications': parsing_result.get('sections', {}).get('certifications', ''),
+            'projects_count': len(parsing_result.get('sections', {}).get('projects', '').split('\n')) if 'projects' in parsing_result.get('sections', {}) else 0
+        }
+        
+        # Perform role-based prediction
+        role_prediction = predict_role_based_score(resume_data, target_role)
+        
+        # Compare with role requirements
+        role_comparison = compare_resume_with_role(resume_data, target_role)
+        
+        # Enhanced role-based analysis
+        enhanced_results = {
+            'analysis_type': 'Role-Based Scoring',
+            'target_role': target_role,
+            'role_specific_score': role_prediction.get('score', 0),
+            'confidence': role_prediction.get('confidence', 0.85),
+            'model_type': role_prediction.get('model_type', 'Unknown'),
+            'compatibility_score': role_comparison.get('compatibility_score', 0),
+            'detailed_analysis': {
+                'prediction_details': role_prediction.get('prediction_details', {}),
+                'features_used': role_prediction.get('features_used', {}),
+                'skill_analysis': role_comparison.get('skill_analysis', {}),
+                'experience_analysis': role_comparison.get('experience_analysis', {})
+            },
+            'role_requirements': role_comparison.get('role_requirements', {}),
+            'gap_analysis': {
+                'missing_skills': role_comparison.get('skill_analysis', {}).get('missing_skills', []),
+                'matched_skills': role_comparison.get('skill_analysis', {}).get('matched_skills', []),
+                'skill_gap_percentage': 100 - role_comparison.get('skill_analysis', {}).get('match_percentage', 0),
+                'experience_gap': _calculate_experience_gap(
+                    experience_info.get('level', 'fresher'),
+                    role_comparison.get('experience_analysis', {}).get('required_level', 'Any')
+                )
+            },
+            'recommendations': _generate_role_recommendations(role_comparison, target_role),
+            'learning_path': _generate_learning_path(
+                role_comparison.get('skill_analysis', {}).get('missing_skills', []),
+                target_role
+            )
+        }
+        
+        # Update database record
+        if user_id:
+            collection.update_one(
+                {'analysis_id': file_id, 'user_id': user_id},
+                {'$set': {
+                    f'role_based_results.{target_role}': enhanced_results,
+                    'updated_at': datetime.utcnow()
+                }}
+            )
+        
+        return {
+            'success': True,
+            'analysis_id': file_id,
+            'results': enhanced_results
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Role-based scoring failed: {str(e)}")
+
+@router.get("/available-roles-ml")
+async def get_available_roles_ml():
+    """Get list of available roles for role-based ML scoring"""
+    try:
+        role_ml_system = get_role_ml_system()
+        roles = role_ml_system.get_available_roles()
+        model_info = role_ml_system.get_model_info()
+        
+        return {
+            'success': True,
+            'available_roles': roles,
+            'model_info': model_info,
+            'total_roles': len(roles)
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get roles: {str(e)}")
+
+@router.get("/analysis-progress/{file_id}")
+async def get_analysis_progress(
+    file_id: str, 
+    user_id: Optional[str] = None,
+    authorization: Optional[str] = Header(None)
+):
+    """Get real-time analysis progress"""
+    if authorization:
+        user = _get_user_from_token(authorization)
+        user_id = user.get('user_id')
+    
+    try:
+        if user_id:
+            collection = get_collection('resume_analyses')
+            analysis_record = collection.find_one({
+                'analysis_id': file_id,
+                'user_id': user_id
+            })
+            
+            if not analysis_record:
+                raise HTTPException(status_code=404, detail="Analysis not found")
+            
+            progress_steps = analysis_record.get('parsing_result', {}).get('progress_steps', [])
+            
+            return {
+                'success': True,
+                'file_id': file_id,
+                'progress_steps': progress_steps,
+                'completed': len(progress_steps) >= 5
+            }
+        else:
+            raise HTTPException(status_code=400, detail="User ID required")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Progress check failed: {str(e)}")
+
+# Helper methods for new endpoints
+def _generate_ats_recommendations(resume_data: Dict[str, Any], ats_results: Dict[str, Any]) -> List[str]:
+    """Generate ATS improvement recommendations"""
+    recommendations = []
+    
+    score = ats_results.get('ats_score', 0)
+    skills = resume_data.get('skills', [])
+    experience_years = resume_data.get('experience_years', 0)
+    
+    if score < 70:
+        recommendations.append("Your ATS score is below average. Focus on adding more relevant technical skills.")
+    
+    if len(skills) < 10:
+        recommendations.append("Add more technical skills to your resume. Aim for 10-15 relevant skills.")
+    
+    if experience_years < 2:
+        recommendations.append("Highlight any internships, projects, or training to demonstrate practical experience.")
+    
+    high_demand_skills = ['python', 'java', 'react', 'aws', 'docker', 'kubernetes']
+    missing_high_demand = [skill for skill in high_demand_skills if skill not in [s.lower() for s in skills]]
+    
+    if missing_high_demand:
+        recommendations.append(f"Consider learning high-demand skills: {', '.join(missing_high_demand[:3])}")
+    
+    return recommendations
+
+def _generate_role_recommendations(role_comparison: Dict[str, Any], target_role: str) -> List[str]:
+    """Generate role-specific recommendations"""
+    recommendations = []
+    
+    skill_analysis = role_comparison.get('skill_analysis', {})
+    missing_skills = skill_analysis.get('missing_skills', [])
+    match_percentage = skill_analysis.get('match_percentage', 0)
+    
+    if match_percentage < 50:
+        recommendations.append(f"Your skill match for {target_role} is low. Focus on learning the core required skills.")
+    
+    if missing_skills:
+        top_missing = missing_skills[:5]
+        recommendations.append(f"Priority skills to learn: {', '.join(top_missing)}")
+    
+    exp_analysis = role_comparison.get('experience_analysis', {})
+    if exp_analysis.get('match_score', 100) < 80:
+        recommendations.append("Consider gaining more experience through projects or internships in this role.")
+    
+    return recommendations
+
+def _generate_learning_path(missing_skills: List[str], target_role: str) -> List[Dict[str, Any]]:
+    """Generate a learning path for missing skills"""
+    if not missing_skills:
+        return []
+    
+    # Prioritize skills based on role and demand
+    skill_priorities = {
+        'python': {'priority': 1, 'time_weeks': 8, 'resources': ['Python.org Tutorial', 'Codecademy Python']},
+        'java': {'priority': 1, 'time_weeks': 10, 'resources': ['Oracle Java Tutorial', 'Coursera Java']},
+        'javascript': {'priority': 1, 'time_weeks': 6, 'resources': ['MDN JavaScript', 'freeCodeCamp']},
+        'react': {'priority': 2, 'time_weeks': 4, 'resources': ['React Official Docs', 'React Tutorial']},
+        'aws': {'priority': 2, 'time_weeks': 6, 'resources': ['AWS Free Tier', 'AWS Training']},
+        'docker': {'priority': 3, 'time_weeks': 3, 'resources': ['Docker Official Tutorial', 'Docker Hub']},
+    }
+    
+    learning_path = []
+    for skill in missing_skills[:5]:  # Top 5 missing skills
+        skill_lower = skill.lower()
+        if skill_lower in skill_priorities:
+            skill_info = skill_priorities[skill_lower]
+            learning_path.append({
+                'skill': skill,
+                'priority': skill_info['priority'],
+                'estimated_time_weeks': skill_info['time_weeks'],
+                'recommended_resources': skill_info['resources'],
+                'description': f"Learn {skill} to improve your match for {target_role}"
+            })
+    
+    return sorted(learning_path, key=lambda x: x['priority'])
+
+def _calculate_percentile_rank(score: float) -> int:
+    """Calculate percentile rank based on ATS score"""
+    # Simple percentile calculation (would be more accurate with actual dataset statistics)
+    if score >= 90:
+        return 95
+    elif score >= 80:
+        return 80
+    elif score >= 70:
+        return 65
+    elif score >= 60:
+        return 50
+    elif score >= 50:
+        return 35
+    else:
+        return 20
+
+def _calculate_experience_gap(resume_level: str, required_level: str) -> Dict[str, Any]:
+    """Calculate experience gap analysis"""
+    level_hierarchy = {
+        'fresher': 0,
+        'junior': 1,
+        'mid-level': 2,
+        'senior': 3
+    }
+    
+    resume_score = level_hierarchy.get(resume_level.lower(), 0)
+    required_score = level_hierarchy.get(required_level.lower(), 1)
+    
+    gap = required_score - resume_score
+    
+    return {
+        'gap_levels': max(0, gap),
+        'recommendation': 'Gain more experience' if gap > 0 else 'Experience level matches requirements',
+        'current_level': resume_level,
+        'required_level': required_level
+    }

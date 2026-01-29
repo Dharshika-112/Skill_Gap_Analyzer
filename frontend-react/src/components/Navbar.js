@@ -9,9 +9,11 @@ import {
   FiX, 
   FiTarget, 
   FiTrendingUp, 
-  FiLightbulb,
+  FiZap,
   FiHome,
-  FiActivity
+  FiActivity,
+  FiBookOpen,
+  FiAward
 } from 'react-icons/fi';
 import './Navbar.css';
 
@@ -31,8 +33,7 @@ const Navbar = () => {
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: FiHome },
     { path: '/skill-gap-analyzer', label: 'Skill Gap Analyzer', icon: FiTarget },
-    { path: '/resume-scoring', label: 'Resume Scoring', icon: FiTrendingUp },
-    { path: '/improvement-suggestions', label: 'Suggestions', icon: FiLightbulb }
+    { path: '/resume-scoring', label: 'Resume Scoring', icon: FiTrendingUp }
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -45,7 +46,7 @@ const Navbar = () => {
           <div className="logo-icon">
             <FiActivity />
           </div>
-          <span className="logo-text">SkillSync Pro</span>
+          <span className="logo-text">CareerBoost AI</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -96,6 +97,9 @@ const Navbar = () => {
                         <div className="profile-details">
                           <div className="profile-name">{user?.name || 'User'}</div>
                           <div className="profile-email">{user?.email || 'user@example.com'}</div>
+                          <div className="profile-completion">
+                            Profile: {user?.profile_completion || 60}% Complete
+                          </div>
                         </div>
                       </div>
                       
@@ -107,8 +111,28 @@ const Navbar = () => {
                         onClick={() => setIsProfileOpen(false)}
                       >
                         <FiUser />
-                        <span>Profile Settings</span>
+                        <span>Complete Profile</span>
                       </Link>
+
+                      <Link
+                        to="/activity-history"
+                        className="profile-menu-item"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <FiBookOpen />
+                        <span>Activity History</span>
+                      </Link>
+
+                      <Link
+                        to="/achievements"
+                        className="profile-menu-item"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <FiAward />
+                        <span>Achievements</span>
+                      </Link>
+                      
+                      <div className="profile-menu-divider"></div>
                       
                       <button
                         className="profile-menu-item logout"

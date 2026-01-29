@@ -10,6 +10,9 @@ import SkillGapAnalyzer from './pages/SkillGapAnalyzer';
 import ResumeScoring from './pages/ResumeScoring';
 import ImprovementSuggestions from './pages/ImprovementSuggestions';
 import Profile from './pages/Profile';
+import RoleDetail from './pages/RoleDetail';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -18,36 +21,68 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="App">
-          <Navbar />
           <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+            {/* Public Routes */}
+            <Route path="/" element={
+              <>
+                <Navbar />
+                <LandingPage />
+              </>
+            } />
+            <Route path="/login" element={
+              <>
+                <Navbar />
+                <Login />
+              </>
+            } />
+            <Route path="/signup" element={
+              <>
+                <Navbar />
+                <Signup />
+              </>
+            } />
+            
+            {/* User Protected Routes */}
             <Route path="/dashboard" element={
               <ProtectedRoute>
+                <Navbar />
                 <Dashboard />
               </ProtectedRoute>
             } />
             <Route path="/skill-gap-analyzer" element={
               <ProtectedRoute>
+                <Navbar />
                 <SkillGapAnalyzer />
               </ProtectedRoute>
             } />
             <Route path="/resume-scoring" element={
               <ProtectedRoute>
+                <Navbar />
                 <ResumeScoring />
               </ProtectedRoute>
             } />
             <Route path="/improvement-suggestions" element={
               <ProtectedRoute>
+                <Navbar />
                 <ImprovementSuggestions />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={
               <ProtectedRoute>
+                <Navbar />
                 <Profile />
               </ProtectedRoute>
             } />
+            <Route path="/role/:roleId" element={
+              <ProtectedRoute>
+                <Navbar />
+                <RoleDetail />
+              </ProtectedRoute>
+            } />
+            
+            {/* Admin Routes (No Navbar) */}
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
         </div>
       </Router>

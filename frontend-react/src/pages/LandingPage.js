@@ -4,10 +4,9 @@ import { motion } from 'framer-motion';
 import { 
   FiTarget, 
   FiTrendingUp, 
-  FiLightbulb, 
+  FiZap, 
   FiUsers, 
-  FiAward, 
-  FiZap,
+  FiSun,
   FiCheckCircle,
   FiArrowRight,
   FiPlay
@@ -29,7 +28,7 @@ const LandingPage = () => {
       color: '#059669'
     },
     {
-      icon: FiLightbulb,
+      icon: FiSun,
       title: 'Intelligent Career Suggestions',
       description: 'Receive personalized recommendations to improve your resume and career prospects.',
       color: '#d97706'

@@ -30,7 +30,7 @@ ENV/
 env.bak/
 venv.bak/
 
-# IDE
+# IDEs
 .vscode/
 .idea/
 *.swp
@@ -49,25 +49,24 @@ Thumbs.db
 # Logs
 *.log
 logs/
-backend/logs/*.log
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Node modules (if any)
+# Node.js
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
+
+# React Build
+frontend-react/build/
+frontend-react/.env.local
+frontend-react/.env.development.local
+frontend-react/.env.test.local
+frontend-react/.env.production.local
+
+# MongoDB
+mongodb_data/
+*.lock
 
 # Temporary files
 *.tmp
@@ -75,25 +74,30 @@ yarn-error.log*
 temp/
 tmp/
 
-# Test files
-test_*.txt
-*_test.txt
-test_resume*.txt
-comprehensive_test_resume.txt
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
 
-# Model files (optional - uncomment if models are large)
-# *.pkl
-# *.joblib
-# *.model
+# Test files (keep essential ones)
+test_*.py
+*_test.py
+quick_*.py
 
-# Data files (optional - uncomment if datasets are large)
-# *.csv
-# *.json
-# *.xlsx
+# Documentation (keep essential ones)
+*_STATUS*.md
+*_SUMMARY*.md
+*_REPORT*.md
+CLEANUP*.md
 
-# Backup files
-*.bak
-*.backup
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# PyCharm
+.idea/
 
 # Coverage reports
 htmlcov/
@@ -104,8 +108,25 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
+# Translations
+*.mo
+*.pot
+
+# Scrapy
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
 # Jupyter Notebook
 .ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
 
 # pyenv
 .python-version
@@ -137,3 +158,6 @@ celerybeat.pid
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Pyre type checker
+.pyre/

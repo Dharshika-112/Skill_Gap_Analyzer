@@ -1,0 +1,519 @@
+{
+	"info": {
+		"_postman_id": "careerboost-ai-api-collection",
+		"name": "CareerBoost AI - Complete API Collection",
+		"description": "Comprehensive API collection for CareerBoost AI system including authentication, role management, skill analysis, and resume processing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication Service (Port 8003)",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{auth_base_url}}/",
+							"host": ["{{auth_base_url}}"],
+							"path": [""]
+						}
+					}
+				},
+				{
+					"name": "User Signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"testpass123\",\n  \"phone\": \"+1234567890\",\n  \"specialization\": \"Software Development\",\n  \"experience\": \"Mid Level (3-5 years)\",\n  \"degree\": \"Bachelor's Degree\"\n}"
+						},
+						"url": {
+							"raw": "{{auth_base_url}}/auth/signup",
+							"host": ["{{auth_base_url}}"],
+							"path": ["auth", "signup"]
+						}
+					}
+				},
+				{
+					"name": "User Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"testpass123\"\n}"
+						},
+						"url": {
+							"raw": "{{auth_base_url}}/auth/login",
+							"host": ["{{auth_base_url}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"phone\": \"+1234567890\",\n  \"specialization\": \"Data Science\",\n  \"experience\": \"Senior Level (6-10 years)\",\n  \"degree\": \"Master's Degree\",\n  \"profile_completion\": 100,\n  \"needs_profile_completion\": false\n}"
+						},
+						"url": {
+							"raw": "{{auth_base_url}}/auth/profile",
+							"host": ["{{auth_base_url}}"],
+							"path": ["auth", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Database Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{auth_base_url}}/auth/database/info",
+							"host": ["{{auth_base_url}}"],
+							"path": ["auth", "database", "info"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Role Management Service (Port 8004)",
+			"item": [
+				{
+					"name": "User Endpoints",
+					"item": [
+						{
+							"name": "Get Active Roles",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{role_base_url}}/api/roles",
+									"host": ["{{role_base_url}}"],
+									"path": ["api", "roles"]
+								}
+							}
+						},
+						{
+							"name": "Get Role Details",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{role_base_url}}/api/roles/frontend-developer",
+									"host": ["{{role_base_url}}"],
+									"path": ["api", "roles", "frontend-developer"]
+								}
+							}
+						},
+						{
+							"name": "Get Active FAQs",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{role_base_url}}/api/faqs",
+									"host": ["{{role_base_url}}"],
+									"path": ["api", "faqs"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin Endpoints",
+					"item": [
+						{
+							"name": "Admin Login",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"admin@careerboost.ai\",\n  \"password\": \"admin123\"\n}"
+								},
+								"url": {
+									"raw": "{{role_base_url}}/api/admin/auth/login",
+									"host": ["{{role_base_url}}"],
+									"path": ["api", "admin", "auth", "login"]
+								}
+							}
+						},
+						{
+							"name": "Get All Roles (Admin)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{role_base_url}}/api/admin/roles",
+									"host": ["{{role_base_url}}"],
+									"path": ["api", "admin", "roles"]
+								}
+							}
+						},
+						{
+							"name": "Create Role",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"roleId\": \"test-role\",\n  \"title\": \"Test Role\",\n  \"cardSubtitle\": \"Test role for API testing\",\n  \"isActive\": true,\n  \"order\": 99,\n  \"overview\": \"This is a test role created via API\",\n  \"responsibilities\": [\"Test responsibility 1\", \"Test responsibility 2\"],\n  \"mustHaveSkills\": [\"Testing\", \"API\", \"Postman\"],\n  \"goodToHaveSkills\": [\"Automation\", \"Documentation\"],\n  \"tools\": [\"Postman\", \"Newman\", \"Jest\"]\n}"
+								},
+								"url": {
+									"raw": "{{role_base_url}}/api/admin/roles",
+									"host": ["{{role_base_url}}"],
+									"path": ["api", "admin", "roles"]
+								}
+							}
+						},
+						{
+							"name": "Update Role",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Updated Test Role\",\n  \"cardSubtitle\": \"Updated test role description\",\n  \"isActive\": true,\n  \"order\": 100,\n  \"overview\": \"This is an updated test role\",\n  \"responsibilities\": [\"Updated responsibility 1\", \"Updated responsibility 2\"],\n  \"mustHaveSkills\": [\"Testing\", \"API\", \"Postman\", \"Updated Skill\"],\n  \"goodToHaveSkills\": [\"Automation\", \"Documentation\", \"CI/CD\"],\n  \"tools\": [\"Postman\", \"Newman\", \"Jest\", \"GitHub Actions\"]\n}"
+								},
+								"url": {
+									"raw": "{{role_base_url}}/api/admin/roles/test-role",
+									"host": ["{{role_base_url}}"],
+									"path": ["api", "admin", "roles", "test-role"]
+								}
+							}
+						},
+						{
+							"name": "Delete Role",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{role_base_url}}/api/admin/roles/test-role",
+									"host": ["{{role_base_url}}"],
+									"path": ["api", "admin", "roles", "test-role"]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Main API Service (Port 8001)",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{main_base_url}}/",
+							"host": ["{{main_base_url}}"],
+							"path": [""]
+						}
+					}
+				},
+				{
+					"name": "API Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{main_base_url}}/api/info",
+							"host": ["{{main_base_url}}"],
+							"path": ["api", "info"]
+						}
+					}
+				},
+				{
+					"name": "Skill Gap Analysis",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_skills\": [\"Python\", \"JavaScript\", \"React\", \"SQL\"],\n  \"target_role\": \"Full Stack Developer\"\n}"
+						},
+						"url": {
+							"raw": "{{main_base_url}}/api/resume/skill-gap-analysis",
+							"host": ["{{main_base_url}}"],
+							"path": ["api", "resume", "skill-gap-analysis"]
+						}
+					}
+				},
+				{
+					"name": "Resume Upload",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{main_base_url}}/api/resume/upload",
+							"host": ["{{main_base_url}}"],
+							"path": ["api", "resume", "upload"]
+						}
+					}
+				},
+				{
+					"name": "General Resume Score",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"resume_data\": \"sample resume content\"\n}"
+						},
+						"url": {
+							"raw": "{{main_base_url}}/api/resume/score-general",
+							"host": ["{{main_base_url}}"],
+							"path": ["api", "resume", "score-general"]
+						}
+					}
+				},
+				{
+					"name": "Role-Based Resume Score",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"resume_data\": \"sample resume content\",\n  \"target_role\": \"Software Engineer\"\n}"
+						},
+						"url": {
+							"raw": "{{main_base_url}}/api/resume/score-role-based",
+							"host": ["{{main_base_url}}"],
+							"path": ["api", "resume", "score-role-based"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Skill Analysis Service (Port 8005)",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{skill_base_url}}/health",
+							"host": ["{{skill_base_url}}"],
+							"path": ["health"]
+						}
+					}
+				},
+				{
+					"name": "Get All Skills",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{skill_base_url}}/api/skills/all",
+							"host": ["{{skill_base_url}}"],
+							"path": ["api", "skills", "all"]
+						}
+					}
+				},
+				{
+					"name": "Role Suggestions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": \"test-user-123\",\n  \"skills\": [\"Python\", \"Machine Learning\", \"TensorFlow\", \"SQL\", \"Data Analysis\"]\n}"
+						},
+						"url": {
+							"raw": "{{skill_base_url}}/api/analysis/role-suggestions",
+							"host": ["{{skill_base_url}}"],
+							"path": ["api", "analysis", "role-suggestions"]
+						}
+					}
+				},
+				{
+					"name": "Specific Role Analysis",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": \"test-user-123\",\n  \"skills\": [\"Python\", \"Machine Learning\", \"TensorFlow\", \"SQL\"],\n  \"target_role\": \"Data Scientist\"\n}"
+						},
+						"url": {
+							"raw": "{{skill_base_url}}/api/analysis/specific-role",
+							"host": ["{{skill_base_url}}"],
+							"path": ["api", "analysis", "specific-role"]
+						}
+					}
+				},
+				{
+					"name": "User Activities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{skill_base_url}}/api/user/test-user-123/activities?limit=10",
+							"host": ["{{skill_base_url}}"],
+							"path": ["api", "user", "test-user-123", "activities"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Role Quiz",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{skill_base_url}}/api/quiz/Data Scientist?user_id=test-user-123",
+							"host": ["{{skill_base_url}}"],
+							"path": ["api", "quiz", "Data Scientist"],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "test-user-123"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Submit Quiz",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": \"test-user-123\",\n  \"role_name\": \"Data Scientist\",\n  \"answers\": {\n    \"q1\": \"A\",\n    \"q2\": \"B\",\n    \"q3\": \"C\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{skill_base_url}}/api/quiz/submit",
+							"host": ["{{skill_base_url}}"],
+							"path": ["api", "quiz", "submit"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "auth_base_url",
+			"value": "http://localhost:8003",
+			"type": "string"
+		},
+		{
+			"key": "role_base_url",
+			"value": "http://localhost:8004",
+			"type": "string"
+		},
+		{
+			"key": "main_base_url",
+			"value": "http://localhost:8001",
+			"type": "string"
+		},
+		{
+			"key": "skill_base_url",
+			"value": "http://localhost:8005",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

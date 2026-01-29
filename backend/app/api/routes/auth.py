@@ -36,26 +36,53 @@ async def signup(req: SignupRequest):
         "name": req.name,
         "email": req.email,
         "password_hash": hash_password(req.password),
-        "created_at": datetime.utcnow()
+        "created_at": datetime.utcnow(),
+        "profile_completion": 25  # Basic info completed
     }
     result = users.insert_one(user)
     user_id = str(result.inserted_id)
     token = create_access_token({"user_id": user_id, "email": req.email})
-    return {"status": "success", "user_id": user_id, "access_token": token}
+    
+    # Return user data in expected format
+    user_data = {
+        "id": user_id,
+        "name": req.name,
+        "email": req.email,
+        "profile_completion": 25
+    }
+    
+    return {
+        "success": True,
+        "access_token": token,
+        "user": user_data
+    }
 
 @router.post("/login")
 async def login(req: LoginRequest):
     users = get_collection('users')
     user = users.find_one({"email": req.email})
     if not user:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="User not found. Please sign up first.")
 
     if not verify_password(req.password, user.get('password_hash', '')):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="Invalid password")
 
     user_id = str(user.get('_id'))
     token = create_access_token({"user_id": user_id, "email": user.get('email')})
-    return {"status": "success", "access_token": token, "user_id": user_id}
+    
+    # Return user data in expected format
+    user_data = {
+        "id": user_id,
+        "name": user.get('name'),
+        "email": user.get('email'),
+        "profile_completion": user.get('profile_completion', 25)
+    }
+    
+    return {
+        "success": True,
+        "access_token": token,
+        "user": user_data
+    }
 
 def _get_token_from_header(authorization: Optional[str]):
     if not authorization:
