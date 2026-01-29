@@ -11,8 +11,28 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
 **Transform your career with AI-powered skill analysis and resume optimization**
+---
 
-[🎯 Live Demo](#-quick-start) • [📖 Documentation](#-documentation) • [🚀 Features](#-key-features) • [💻 Installation](#-installation)
+## 🎯 Live Demo
+
+Watch the complete working demo of **CareerBoost AI – Skill Gap Analyzer & Resume Scoring Platform** here:
+
+
+▶️ **YouTube Demo Link:**  
+https://youtu.be/xuqiFPrS6bs
+
+### 🔍 What is shown in this demo:
+- User skill selection and analysis
+- AI-based skill gap identification
+- Role-wise compatibility scoring
+- Missing skills and improvement suggestions
+- Resume upload and ATS-style scoring
+- Dashboard-style result visualization
+
+📌 *This demo showcases the real-time working of the system with AI-driven logic and practical use cases.*
+
+---
+
 
 </div>
 
