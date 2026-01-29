@@ -341,39 +341,6 @@ cd frontend-react && npm test
 
 ---
 
-## 🔧 API Documentation
-
-### 🔐 Authentication Endpoints
-```http
-POST /api/auth/register    # User registration
-POST /api/auth/login       # User login
-GET  /api/auth/profile     # Get user profile
-```
-
-### 🎯 Skill Gap Analysis
-```http
-GET  /api/skills/all                    # Get all available skills
-POST /api/analysis/role-suggestions     # Get role recommendations
-POST /api/analysis/specific-role        # Analyze specific role match
-GET  /api/quiz/{role_name}             # Get role-based quiz
-POST /api/quiz/submit                   # Submit quiz answers
-```
-
-### 📄 Resume Scoring
-```http
-POST /api/resume/upload                 # Upload and parse PDF
-POST /api/resume/score-general          # General ATS scoring
-POST /api/resume/score-role-based       # Role-specific scoring
-GET  /api/resume/history/{user_id}      # Get analysis history
-```
-
-### 🏢 Role Management
-```http
-GET  /api/roles                         # Get all career roles
-GET  /api/roles/{role_id}              # Get specific role details
-```
-
----
 
 ---
 
