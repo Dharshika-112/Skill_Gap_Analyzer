@@ -428,14 +428,7 @@ We welcome contributions! Here's how you can help:
 
 ---
 
-## 📚 Documentation
 
-- **📖 [API Documentation](http://localhost:8006/docs)** - Interactive Swagger docs
-- **🚀 [Startup Guide](STARTUP_COMMANDS_GUIDE.md)** - Detailed setup instructions
-- **🗄️ [Database Schema](DATABASE_STRUCTURE.md)** - Database structure and models
-- **📊 [System Status](FINAL_SYSTEM_STATUS_COMPLETE.md)** - Current system status
-
----
 
 ## 🐛 Troubleshooting
 
